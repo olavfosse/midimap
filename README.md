@@ -1,4 +1,9 @@
+This is not yet useable as a general purpose program since it requires hardcoding the midi event data1s and keycodes in the source code. Also since this is my first Go program, don't expect the code to be very idiomatic.
+
+---
+
 # midimap
+Map midi events to simulated keyboard events.
 ## Setup
 ### Install portmidi
 ```sh
