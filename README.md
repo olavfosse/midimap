@@ -7,12 +7,17 @@ sudo apt install libportmidi-dev
 # MacOS
 brew install portmidi
 ```
+### Install go packages
+```sh
+go get github.com/micmonay/keybd_event github.com/rakyll/portmidi
+```
 ### Verify that portmidi is working
 ```sh
 # The following command outputs the midi events of the default midi device to stdout.
 # Try sending some midi events and see if they are outputted to test that portmidi is working correctly
 go run midilog.go
 ```
+
 ## Alternatives
 | Alternative                                                                         | License                              | Platform     | Comment          |
 |-------------------------------------------------------------------------------------|--------------------------------------|--------------|------------------|
