@@ -18,19 +18,14 @@ func init() {
 		log.Fatal(err)
 	}
 
-	// For linux, it is important to wait 2 seconds, see https://github.com/micmonay/keybd_event/issues/25 for why
+	// For linux, it is important to wait 2 seconds, see https://github.com/micmonay/keybd_event/issues/25
 	if runtime.GOOS == "linux" {
 		time.Sleep(2 * time.Second)
 	}
 }
 
-func pressKey(k int) {
+func Press(k int) {
 	kb.SetKeys(k)
 	kb.Launching()
 	kb.Clear()
 }
-
-func E() { pressKey(keybd_event.VK_E) }
-func F() { pressKey(keybd_event.VK_F) }
-func J() { pressKey(keybd_event.VK_J) }
-func I() { pressKey(keybd_event.VK_I) }
