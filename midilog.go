@@ -10,6 +10,7 @@ import (
 
 func main() {
 	portmidi.Initialize()
+	defer portmidi.Terminate()
 
 	count := portmidi.CountDevices()
 	if count == 0 {
@@ -36,8 +37,10 @@ func main() {
 			}
 		}
 
-		if len(events) != 0 {
-			fmt.Printf("%v\n", events)
+		for _, event := range events {
+			fmt.Printf("data1: %d\n", event.Data1) // which key / drum
+			fmt.Printf("data2: %d\n", event.Data2) // how hard
+			fmt.Println("---===---")
 		}
 	}
 }
