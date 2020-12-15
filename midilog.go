@@ -19,8 +19,8 @@ func main() {
 	info := portmidi.Info(id)
 	fmt.Printf("default input device id: %v\n", id)
 	fmt.Printf("default input device info: %v\n", info)
-
-	in, err := portmidi.NewInputStream(id, 1024)
+	var bufferSize int64 = 1024
+	in, err := portmidi.NewInputStream(id, bufferSize)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,7 +29,11 @@ func main() {
 	for {
 		events, err := in.Read(1024)
 		if err != nil {
-			log.Fatal(err)
+			// ErrSysExOverflow is returned sporadically when i use the PSR E333 piano keyboard
+			// increasing bufferSize does NOT help.
+			if err != portmidi.ErrSysExOverflow {
+				log.Fatal(err)
+			}
 		}
 
 		if len(events) != 0 {
