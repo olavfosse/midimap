@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"./press"
 	"github.com/micmonay/keybd_event"
@@ -31,31 +31,64 @@ func main() {
 	portmidi.Initialize()
 	defer portmidi.Terminate()
 
+	var id portmidi.DeviceID
+
 	count := portmidi.CountDevices()
-	if count == 0 {
-		log.Fatal("No devices found, exiting")
+	switch count {
+	case 0:
+		fmt.Fprintln(os.Stderr, "midimap: no devices found, exiting")
+		os.Exit(1)
+	case 1:
+		id = portmidi.DefaultInputDeviceID()
+	default:
+		// list alternatives
+		alternatives, sep := "", ""
+		maxID := portmidi.DeviceID(count - 1)
+
+		for i := portmidi.DeviceID(0); i <= maxID; i++ {
+			fmt.Printf("%d: %s\n", i, portmidi.Info(i))
+			alternatives += fmt.Sprintf("%s%d", sep, i)
+			sep = ","
+		}
+
+		// prompt for a choice
+		for {
+			fmt.Printf("{%s}: ", alternatives)
+
+			_, err := fmt.Scanf("%d", &id)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+
+			if id < 0 || id > maxID {
+				fmt.Printf("Please answer {%s}\n", alternatives)
+			} else {
+				break
+			}
+		}
 	}
 
-	id := portmidi.DefaultInputDeviceID()
 	info := portmidi.Info(id)
-	fmt.Printf("default input device id: %v\n", id)
-	fmt.Printf("default input device info: %v\n", info)
+
+	fmt.Printf("input device id: %v\n", id)
+	fmt.Printf("input device info: %v\n", info)
 
 	var bufferSize int64 = 1024
 	in, err := portmidi.NewInputStream(id, bufferSize)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
 	}
 	defer in.Close()
 
 	for {
 		events, err := in.Read(1024)
-		if err != nil {
+		if err != nil && err != portmidi.ErrSysExOverflow {
 			// ErrSysExOverflow is returned sporadically when i use the PSR E333 piano keyboard
 			// increasing bufferSize does NOT help.
-			if err != portmidi.ErrSysExOverflow {
-				log.Fatal(err)
-			}
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
 		}
 
 		for _, event := range events {
