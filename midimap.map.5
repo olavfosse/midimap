@@ -14,7 +14,8 @@ to determine which MIDI events map to which actions.
 .Pp
 A
 .Nm
-file is a comma separated values (RFC 4180) file with two fields per record (line).
+file is a comma separated values (RFC 4180) file with two or more fields per record.
+Lines starting with "# "(hash+space) are treated as comments.
 Each record consists of one MATCHER field followed by one or more ACTION fields.
 .Pp
 The MATCHER field is an expression which either match or do not match a MIDI event.
@@ -26,7 +27,9 @@ The syntax of the ACTION field is described in the ACTION SYNTAX section.
 .Pp
 If the MATCHER expression of a record matches an incoming MIDI event, all the ACTIONs of the record are performed.
 .Sh MATCHER SYNTAX
-To be specified.
+A MATCHER must conform to one of the following forms COMPARISON, (MATCHER || MATCHER), (MATCHER && MATCHER), (MATCHER ? MATCHER : MATCHER) or (!MATCHER).
+A COMPARISON must conform to one of the following forms data1>INTEGER, data1<INTEGER, data1==INTEGER, data2>INTEGER, data2<INTEGER or data2==INTEGER
+(data1>10&&
 .Sh ACTION SYNTAX
 To be specified.
 .Sh EXAMPLES
@@ -35,7 +38,7 @@ To be written.
 .Xr midimap 1
 .Pp
 \" Alternatively the official name of the document(Common Format and MIME Type for Comma-Separated Values (CSV) Files) could be used.
-.Lk https://tools.ietf.org/html/rfc4180 "RFC 4180" ,
+.Lk https://tools.ietf.org/pdf/rfc4180.pdf "RFC 4180" ,
 .Lk https://github.com/fossegrim/midimap
 .Sh AUTHORS
 .An Olav Fosse Aq Mt mail@olavfosse.no
