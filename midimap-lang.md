@@ -10,7 +10,7 @@ Every line which starts with a hash "#" is a COMMENT. COMMENTs have no effect on
  #This line however is not a COMMENT because there is a space preceeding the hash.
 ```
 
-**Every** line which is not a COMMENT is a MAPPING, there are **no** exceptions to this rule. Although a line is a MAPPING it can nonetheless be a invalid.
+**Every** line which is not a COMMENT is a MAPPING, there are **no** exceptions to this rule. Although a line is a MAPPING it can nonetheless be an invalid MAPPING.
 ```midimap-lang
 # The empty line following this COMMENT is an invalid MAPPING, but a MAPPING nonetheless.
 
