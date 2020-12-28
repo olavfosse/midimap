@@ -151,3 +151,36 @@ func TestParseMatcherSansRightComparison(t *testing.T) {
 		t.Errorf("parseMatcher returns incorrect ok %t", ok)
 	}
 }
+
+func areMatchersEqual(left, right Matcher) bool {
+	return areComparisonsEqual(left.LeftComparison, right.LeftComparison) && areComparisonsEqual(left.RightComparison, right.RightComparison)
+}
+
+func TestParseMapping(t *testing.T) {
+	wantedMatcher := Matcher{
+		LeftComparison: Comparison{
+			LeftOperand:  Part1,
+			Operator:     EqualToOperator,
+			RightOperand: 1,
+		},
+		RightComparison: Comparison{
+			LeftOperand:  Part2,
+			Operator:     UnequalToOperator,
+			RightOperand: 2,
+		},
+	}
+	wantedKeyCode := 123
+	wantedOk := true
+
+	mapping, ok := parseMapping("part1 == 1 & part2 != 2 -> 123")
+
+	if !areMatchersEqual(mapping.Matcher, wantedMatcher) {
+		t.Error("parseMapping returns mapping with incorrect matcher")
+	}
+	if mapping.KeyCode != wantedKeyCode {
+		t.Error("parseMapping returns mapping with incorrect keycode")
+	}
+	if ok != wantedOk {
+		t.Errorf("parseMapping returns incorrect ok %t", ok)
+	}
+}
