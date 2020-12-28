@@ -4,22 +4,22 @@ import "testing"
 
 // Test that parseComparison parses a valid comparison, where the left operand is part1, correctly.
 func TestParsePart1Comparison(t *testing.T) {
-	wantedIdentifier := Part1Identifier
+	wantedLeftOperand := Part1
 	wantedOperator := GreaterThanOperator
-	wantedInteger := 123
+	wantedRightOperand := 123
 	wantedOk := true
 
 	s := "part1>123"
-	identifier, operator, integer, ok := parseComparison(s)
+	leftOperand, operator, rightOperand, ok := parseComparison(s)
 
-	if identifier != wantedIdentifier {
-		t.Errorf("parseComparison returns incorrect identifier %v, want %v", identifier, wantedIdentifier)
+	if leftOperand != wantedLeftOperand {
+		t.Errorf("parseComparison returns incorrect leftOperand %v, want %v", leftOperand, wantedLeftOperand)
 	}
 	if operator != wantedOperator {
 		t.Errorf("parseComparison returns incorrect operator %v, want %v", operator, wantedOperator)
 	}
-	if integer != wantedInteger {
-		t.Errorf("parseComparison returns incorrect integer %d, want %d", integer, wantedInteger)
+	if rightOperand != wantedRightOperand {
+		t.Errorf("parseComparison returns incorrect rightOperand %d, want %d", rightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
@@ -28,22 +28,22 @@ func TestParsePart1Comparison(t *testing.T) {
 
 // Test that parseComparison parses a valid comparison, where the left operand is part2, correctly.
 func TestParsePart2Comparison(t *testing.T) {
-	wantedIdentifier := Part2Identifier
+	wantedLeftOperand := Part2
 	wantedOperator := EqualToOperator
-	wantedInteger := 321
+	wantedRightOperand := 321
 	wantedOk := true
 
 	s := "part2==321"
-	identifier, operator, integer, ok := parseComparison(s)
+	leftOperand, operator, rightOperand, ok := parseComparison(s)
 
-	if identifier != wantedIdentifier {
-		t.Errorf("parseComparison returns incorrect identifier %v, want %v", identifier, wantedIdentifier)
+	if leftOperand != wantedLeftOperand {
+		t.Errorf("parseComparison returns incorrect leftOperand %v, want %v", leftOperand, wantedLeftOperand)
 	}
 	if operator != wantedOperator {
 		t.Errorf("parseComparison returns incorrect operator %v, want %v", operator, wantedOperator)
 	}
-	if integer != wantedInteger {
-		t.Errorf("parseComparison returns incorrect integer %d, want %d", integer, wantedInteger)
+	if rightOperand != wantedRightOperand {
+		t.Errorf("parseComparison returns incorrect rightOperand %d, want %d", rightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)

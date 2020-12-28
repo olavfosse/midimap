@@ -67,11 +67,11 @@ func parseComparison(s string) (Part1OrPart2, ComparisonOperator, int, bool) {
 	}
 	s = s[operatorLength:] // Discard parsed operator
 
-	var integer int
-	integer, err := strconv.Atoi(s)
+	var rightOperand int
+	rightOperand, err := strconv.Atoi(s)
 	if err != nil {
 		return NeitherPart1OrPart2, NoOperator, -1, false
 	}
 
-	return leftOperand, operator, integer, true
+	return leftOperand, operator, rightOperand, true
 }
