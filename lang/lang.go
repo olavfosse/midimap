@@ -33,10 +33,14 @@ type Comparison struct {
 	RightOperand int
 }
 
-// parseComparison parses a comparison of the form: {part1,part2}{<,<=,==,!=,>=,>}<integer>.
+// parseComparison parses a comparison of the following form.
+// {part1,part2}{<,<=,==,!=,>=,>}<integer>
+// Spaces may be intersped anywhere without changing the result.
 // If s is not of the specified form, it returns comparison, false otherwise it returns comparison, true.
 // NB: As of now this function returns a Comparison struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
 func parseComparison(s string) (Comparison, bool) {
+	s = strings.ReplaceAll(s, " ", "") // Remove spaces
+
 	var comparison Comparison
 	switch {
 	case strings.HasPrefix(s, "part1"):

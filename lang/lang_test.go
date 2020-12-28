@@ -9,7 +9,7 @@ func TestParsePart1Comparison(t *testing.T) {
 	wantedRightOperand := 123
 	wantedOk := true
 
-	s := "part1>123"
+	s := "part1 >123"
 	comparison, ok := parseComparison(s)
 
 	if comparison.LeftOperand != wantedLeftOperand {
@@ -33,7 +33,7 @@ func TestParsePart2Comparison(t *testing.T) {
 	wantedRightOperand := 321
 	wantedOk := true
 
-	s := "part2==321"
+	s := "part2 = =  321"
 	comparison, ok := parseComparison(s)
 
 	if comparison.LeftOperand != wantedLeftOperand {
