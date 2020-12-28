@@ -10,16 +10,16 @@ func TestParsePart1Comparison(t *testing.T) {
 	wantedOk := true
 
 	s := "part1>123"
-	leftOperand, operator, rightOperand, ok := parseComparison(s)
+	comparison, ok := parseComparison(s)
 
-	if leftOperand != wantedLeftOperand {
-		t.Errorf("parseComparison returns incorrect leftOperand %v, want %v", leftOperand, wantedLeftOperand)
+	if comparison.LeftOperand != wantedLeftOperand {
+		t.Errorf("parseComparison returns a comparison with an incorrect leftOperand %v, want %v", comparison.LeftOperand, wantedLeftOperand)
 	}
-	if operator != wantedOperator {
-		t.Errorf("parseComparison returns incorrect operator %v, want %v", operator, wantedOperator)
+	if comparison.Operator != wantedOperator {
+		t.Errorf("parseComparison returns a comparison with an incorrect operator %v, want %v", comparison.Operator, wantedOperator)
 	}
-	if rightOperand != wantedRightOperand {
-		t.Errorf("parseComparison returns incorrect rightOperand %d, want %d", rightOperand, wantedRightOperand)
+	if comparison.RightOperand != wantedRightOperand {
+		t.Errorf("parseComparison returns a comparison with an incorrect rightOperand %d, want %d", comparison.RightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
@@ -34,16 +34,16 @@ func TestParsePart2Comparison(t *testing.T) {
 	wantedOk := true
 
 	s := "part2==321"
-	leftOperand, operator, rightOperand, ok := parseComparison(s)
+	comparison, ok := parseComparison(s)
 
-	if leftOperand != wantedLeftOperand {
-		t.Errorf("parseComparison returns incorrect leftOperand %v, want %v", leftOperand, wantedLeftOperand)
+	if comparison.LeftOperand != wantedLeftOperand {
+		t.Errorf("parseComparison returns a comparison with an incorrect leftOperand %v, want %v", comparison.LeftOperand, wantedLeftOperand)
 	}
-	if operator != wantedOperator {
-		t.Errorf("parseComparison returns incorrect operator %v, want %v", operator, wantedOperator)
+	if comparison.Operator != wantedOperator {
+		t.Errorf("parseComparison returns a comparison with an incorrect operator %v, want %v", comparison.Operator, wantedOperator)
 	}
-	if rightOperand != wantedRightOperand {
-		t.Errorf("parseComparison returns incorrect rightOperand %d, want %d", rightOperand, wantedRightOperand)
+	if comparison.RightOperand != wantedRightOperand {
+		t.Errorf("parseComparison returns a comparison with an incorrect rightOperand %d, want %d", comparison.RightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
@@ -55,7 +55,7 @@ func TestParseComparisonSansOperator(t *testing.T) {
 	wantedOk := false
 
 	s := "part2456"
-	_, _, _, ok := parseComparison(s)
+	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
@@ -67,7 +67,7 @@ func TestParseComparisonSansRightOperand(t *testing.T) {
 	wantedOk := false
 
 	s := "part1!="
-	_, _, _, ok := parseComparison(s)
+	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
@@ -79,7 +79,7 @@ func TestParseComparisonSansLeftOperand(t *testing.T) {
 	wantedOk := false
 
 	s := "!=54"
-	_, _, _, ok := parseComparison(s)
+	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)

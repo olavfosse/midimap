@@ -27,51 +27,61 @@ const (
 	NeitherPart1OrPart2 = -1
 )
 
+type Comparison struct {
+	LeftOperand  Part1OrPart2
+	Operator     ComparisonOperator
+	RightOperand int
+}
+
 // parseComparison parses a comparison of the form: {part1,part2}{<,<=,==,!=,>=,>}<integer>.
-// If s is not of the specified form, ok is false. Otherwise it is true.
-func parseComparison(s string) (Part1OrPart2, ComparisonOperator, int, bool) {
-	var leftOperand Part1OrPart2
+// If s is not of the specified form, it returns comparison, false otherwise it returns comparison, true.
+// NB: As of now this function returns a Comparison struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
+func parseComparison(s string) (Comparison, bool) {
+	var comparison Comparison
 	switch {
 	case strings.HasPrefix(s, "part1"):
-		leftOperand = Part1
+		comparison.LeftOperand = Part1
 	case strings.HasPrefix(s, "part2"):
-		leftOperand = Part2
+		comparison.LeftOperand = Part2
 	default:
-		return NeitherPart1OrPart2, NoOperator, -1, false
+		return comparison, false
 	}
 	s = s[len("partx"):] // Discard parsed leftOperand
 
-	var operator ComparisonOperator
 	var operatorLength int
 	switch {
 	case strings.HasPrefix(s, "=="):
-		operator = EqualToOperator
+		comparison.Operator = EqualToOperator
 		operatorLength = 2
 	case strings.HasPrefix(s, "!="):
-		operator = UnequalToOperator
+		comparison.Operator = UnequalToOperator
 		operatorLength = 2
 	case strings.HasPrefix(s, "<="):
-		operator = LessThanOrEqualToOperator
+		comparison.Operator = LessThanOrEqualToOperator
 		operatorLength = 2
 	case strings.HasPrefix(s, ">="):
-		operator = GreaterThanOrEqualToOperator
+		comparison.Operator = GreaterThanOrEqualToOperator
 		operatorLength = 2
 	case strings.HasPrefix(s, "<"):
-		operator = LessThanOperator
+		comparison.Operator = LessThanOperator
 		operatorLength = 1
 	case strings.HasPrefix(s, ">"):
-		operator = GreaterThanOperator
+		comparison.Operator = GreaterThanOperator
 		operatorLength = 1
 	default:
-		return NeitherPart1OrPart2, NoOperator, -1, false
+		return comparison, false
 	}
 	s = s[operatorLength:] // Discard parsed operator
 
-	var rightOperand int
-	rightOperand, err := strconv.Atoi(s)
+	// I initially thought the two lines following this paragraph could be written more simply as the following.
+	// comparison.RightOperand, err := strconv.Atoi(s)
+	// Unfortunately, that caused an "expected identifier on left side of :=" error.
+	// I am not quite sure why exactly that happened, but it seems like struct field are not "identifiers"
+	var err error
+	comparison.RightOperand, err = strconv.Atoi(s)
 	if err != nil {
-		return NeitherPart1OrPart2, NoOperator, -1, false
+		return comparison, false
 	}
 
-	return leftOperand, operator, rightOperand, true
+	return comparison, true
 }
