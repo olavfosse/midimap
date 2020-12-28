@@ -204,3 +204,13 @@ func TestParseMappingSansMatcher(t *testing.T) {
 		t.Errorf("parseMapping returns incorrect ok %t", ok)
 	}
 }
+
+func TestParseMappingSansKeycode(t *testing.T) {
+	wantedOk := false
+
+	_, ok := parseMapping("part2 != 3 & part2 ->")
+
+	if ok != wantedOk {
+		t.Errorf("parseMapping returns incorrect ok %t", ok)
+	}
+}
