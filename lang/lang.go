@@ -19,27 +19,27 @@ const (
 	NoOperator = -1
 )
 
-type Identifier int
+type Part1OrPart2 int
 
 const (
-	Part1Identifier Identifier = iota
-	Part2Identifier
-	NoIdentifer = -1
+	Part1 Part1OrPart2 = iota
+	Part2
+	NeitherPart1OrPart2 = -1
 )
 
 // parseComparison parses a comparison of the form: {part1,part2}{<,<=,==,!=,>=,>}<integer>.
 // If s is not of the specified form, ok is false. Otherwise it is true.
-func parseComparison(s string) (Identifier, ComparisonOperator, int, bool) {
-	var identifier Identifier
+func parseComparison(s string) (Part1OrPart2, ComparisonOperator, int, bool) {
+	var leftOperand Part1OrPart2
 	switch {
 	case strings.HasPrefix(s, "part1"):
-		identifier = Part1Identifier
+		leftOperand = Part1
 	case strings.HasPrefix(s, "part2"):
-		identifier = Part2Identifier
+		leftOperand = Part2
 	default:
-		return NoIdentifer, NoOperator, -1, false
+		return NeitherPart1OrPart2, NoOperator, -1, false
 	}
-	s = s[len("partx"):] // Discard parsed identifier
+	s = s[len("partx"):] // Discard parsed leftOperand
 
 	var operator ComparisonOperator
 	var operatorLength int
@@ -63,15 +63,15 @@ func parseComparison(s string) (Identifier, ComparisonOperator, int, bool) {
 		operator = GreaterThanOperator
 		operatorLength = 1
 	default:
-		return NoIdentifer, NoOperator, -1, false
+		return NeitherPart1OrPart2, NoOperator, -1, false
 	}
 	s = s[operatorLength:] // Discard parsed operator
 
 	var integer int
 	integer, err := strconv.Atoi(s)
 	if err != nil {
-		return NoIdentifer, NoOperator, -1, false
+		return NeitherPart1OrPart2, NoOperator, -1, false
 	}
 
-	return identifier, operator, integer, true
+	return leftOperand, operator, integer, true
 }
