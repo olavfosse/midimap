@@ -49,3 +49,16 @@ func TestParsePart2Comparison(t *testing.T) {
 		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
 	}
 }
+
+// Test that parseComparison parses an invalid comparison, lacking the comparison operator, correctly.
+func TestParseComparisonSansOperator(t *testing.T) {
+	wantedOk := false
+
+	s := "part2456"
+	_, _, _, ok := parseComparison(s)
+
+	if ok != wantedOk {
+		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+	}
+}
+
