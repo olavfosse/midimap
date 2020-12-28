@@ -138,3 +138,44 @@ func parseMatcher(s string) (Matcher, bool) {
 
 	return matcher, true
 }
+
+// parseKeyCode parses a KeyCode of the following form.
+// integer
+// Spaces may be be intersped anywhere without changing the result.
+// If s is of the specified form, it returns keyCode, true, otherwise it returns keyCode, false.
+func parseKeyCode(s string) (int, bool) {
+	s = strings.ReplaceAll(s, " ", "") // Remove spaces
+	keyCode, err := strconv.Atoi(s)
+	if err != nil {
+		return keyCode, false
+	}
+	return keyCode, true
+}
+
+type Mapping struct {
+	Matcher Matcher
+	KeyCode int
+}
+
+// parseMapping parses a mapping of the following form.
+// matcher->keycode
+// Spaces may be intersped anywhere without changing the result.
+// If s is of the specified form, it returns mapping, true otherwise it returns mapping, false.
+// NB: As of now this function returns a Mapping struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
+func parseMapping(s string) (Mapping, bool) {
+	var mapping Mapping
+	r := regexp.MustCompilePOSIX("- *>")
+	before, after, ok := beforeAndAfter(r, s)
+	if !ok {
+		return mapping, false
+	}
+	mapping.Matcher, ok = parseMatcher(before)
+	if !ok {
+		return mapping, false
+	}
+	mapping.KeyCode, ok = parseKeyCode(after)
+	if !ok {
+		return mapping, false
+	}
+	return mapping, true
+}
