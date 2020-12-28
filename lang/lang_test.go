@@ -194,3 +194,13 @@ func TestParseMappingSansSeparator(t *testing.T) {
 		t.Errorf("parseMapping returns incorrect ok %t", ok)
 	}
 }
+
+func TestParseMappingSansMatcher(t *testing.T) {
+	wantedOk := false
+
+	_, ok := parseMapping("-> 123")
+
+	if ok != wantedOk {
+		t.Errorf("parseMapping returns incorrect ok %t", ok)
+	}
+}
