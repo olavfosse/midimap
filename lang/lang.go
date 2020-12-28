@@ -3,6 +3,7 @@
 package lang
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -88,4 +89,58 @@ func parseComparison(s string) (Comparison, bool) {
 	}
 
 	return comparison, true
+}
+
+// Currently this requires the matchers to be of the following form:
+// {part1,part2}{<,<=,==,!=,>=,>}integer & {part1,part2}{<,<=,==,!=,>=,>}integer
+// That only covers a subset of all legal matchers according to the spec.
+// I will update this to behave as specified in the spec when I learn how to do polymorphism(presumably with interfaces) in go.
+type Matcher struct {
+	LeftComparison  Comparison
+	RightComparison Comparison
+}
+
+// beforeAndAfter splits a string into two substrings, one before the leftmost match of a regexp and the other after it.
+// If r matches s, beforeAndAfter returns (left, right, true) where left is the characters prior to the leftmost match and right is the characters to the right of the leftmost match.
+// Otherwise, that is if r does not match s, ("", "", false) is returned.
+func beforeAndAfter(r *regexp.Regexp, s string) (string, string, bool) {
+	loc := r.FindStringIndex(s)
+	if loc == nil {
+		return "", "", false
+	}
+
+	before, after := s[:loc[0]], s[loc[1]:]
+	return before, after, true
+
+}
+
+// parseMatcher parses a matcher of the following form.
+// comparison&comparison
+// Spaces may be intersped anywhere without changing the result.
+// If s is of the specified form, it returns matcher, true otherwise it returns matcher, false.
+// NB: As of now this function returns a Matcher struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
+func parseMatcher(s string) (Matcher, bool) {
+	var matcher Matcher
+	// split on &
+	r := regexp.MustCompilePOSIX("&")
+	left, right, ok := beforeAndAfter(r, s)
+	// report if the split failed
+	if !ok { // missing logical and "&"
+		return matcher, false
+	}
+
+	// parse comparisons from before & and after &
+	// report if parsing comparisons failed
+	leftComparison, ok := parseComparison(left)
+	if !ok {
+		return matcher, false
+	}
+	matcher.LeftComparison = leftComparison
+	rightComparison, ok := parseComparison(right)
+	if !ok {
+		return matcher, false
+	}
+	matcher.RightComparison = rightComparison
+
+	return matcher, true
 }
