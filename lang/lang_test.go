@@ -8,7 +8,7 @@ import (
 func TestParsePart1Comparison(t *testing.T) {
 	wantedLeftOperand := Part1
 	wantedOperator := GreaterThanOperator
-	wantedRightOperand := 123
+	var wantedRightOperand int64 = 123
 	wantedOk := true
 
 	s := "part1 >123"
@@ -32,7 +32,7 @@ func TestParsePart1Comparison(t *testing.T) {
 func TestParsePart2Comparison(t *testing.T) {
 	wantedLeftOperand := Part2
 	wantedOperator := EqualToOperator
-	wantedRightOperand := 321
+	var wantedRightOperand int64 = 321
 	wantedOk := true
 
 	s := "part2 = =  321"

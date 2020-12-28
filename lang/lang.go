@@ -29,13 +29,12 @@ type Part1OrPart2 int
 const (
 	Part1 Part1OrPart2 = iota
 	Part2
-	NeitherPart1OrPart2 = -1
 )
 
 type Comparison struct {
 	LeftOperand  Part1OrPart2
 	Operator     ComparisonOperator
-	RightOperand int
+	RightOperand int64
 }
 
 // parseComparison parses a comparison of the following form.
@@ -82,11 +81,11 @@ func parseComparison(s string) (Comparison, bool) {
 	}
 	s = s[operatorLength:] // Discard parsed operator
 
-	var err error
-	comparison.RightOperand, err = strconv.Atoi(s)
+	n, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		return comparison, false
 	}
+	comparison.RightOperand = int64(n)
 
 	return comparison, true
 }
