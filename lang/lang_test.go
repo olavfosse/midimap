@@ -184,3 +184,13 @@ func TestParseMapping(t *testing.T) {
 		t.Errorf("parseMapping returns incorrect ok %t", ok)
 	}
 }
+
+func TestParseMappingSansSeparator(t *testing.T) {
+	wantedOk := false
+
+	_, ok := parseMapping("part2 != 3 & part2 >= 2 123")
+
+	if ok != wantedOk {
+		t.Errorf("parseMapping returns incorrect ok %t", ok)
+	}
+}
