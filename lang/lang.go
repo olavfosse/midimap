@@ -78,10 +78,6 @@ func parseComparison(s string) (Comparison, bool) {
 	}
 	s = s[operatorLength:] // Discard parsed operator
 
-	// I initially thought the two lines following this paragraph could be written more simply as the following.
-	// comparison.RightOperand, err := strconv.Atoi(s)
-	// Unfortunately, that caused an "expected identifier on left side of :=" error.
-	// I am not quite sure why exactly that happened, but it seems like struct field are not "identifiers"
 	var err error
 	comparison.RightOperand, err = strconv.Atoi(s)
 	if err != nil {
@@ -131,16 +127,14 @@ func parseMatcher(s string) (Matcher, bool) {
 
 	// parse comparisons from before & and after &
 	// report if parsing comparisons failed
-	leftComparison, ok := parseComparison(left)
+	matcher.LeftComparison, ok = parseComparison(left)
 	if !ok {
 		return matcher, false
 	}
-	matcher.LeftComparison = leftComparison
-	rightComparison, ok := parseComparison(right)
+	matcher.RightComparison, ok = parseComparison(right)
 	if !ok {
 		return matcher, false
 	}
-	matcher.RightComparison = rightComparison
 
 	return matcher, true
 }
