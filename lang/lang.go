@@ -46,23 +46,21 @@ func parseComparison(s string) (Identifier, ComparisonOperator, int, bool) {
 	switch {
 	case strings.HasPrefix(s, "=="):
 		operator = EqualToOperator
-		fallthrough
+		operatorLength = 2
 	case strings.HasPrefix(s, "!="):
 		operator = UnequalToOperator
-		fallthrough
+		operatorLength = 2
 	case strings.HasPrefix(s, "<="):
 		operator = LessThanOrEqualToOperator
-		fallthrough
+		operatorLength = 2
 	case strings.HasPrefix(s, ">="):
 		operator = GreaterThanOrEqualToOperator
-
 		operatorLength = 2
-	case strings.HasPrefix(s, ">"):
-		operator = LessThanOperator
-		fallthrough
 	case strings.HasPrefix(s, "<"):
+		operator = LessThanOperator
+		operatorLength = 1
+	case strings.HasPrefix(s, ">"):
 		operator = GreaterThanOperator
-
 		operatorLength = 1
 	default:
 		return NoIdentifer, NoOperator, -1, false
