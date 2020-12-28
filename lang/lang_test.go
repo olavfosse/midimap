@@ -1,6 +1,8 @@
 package lang
 
-import "testing"
+import (
+	"testing"
+)
 
 // Test that parseComparison parses a valid comparison, where the left operand is part1, correctly.
 func TestParsePart1Comparison(t *testing.T) {
@@ -22,7 +24,7 @@ func TestParsePart1Comparison(t *testing.T) {
 		t.Errorf("parseComparison returns a comparison with an incorrect rightOperand %d, want %d", comparison.RightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
-		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+		t.Errorf("parseComparison returns incorrect ok %t", ok)
 	}
 }
 
@@ -46,7 +48,7 @@ func TestParsePart2Comparison(t *testing.T) {
 		t.Errorf("parseComparison returns a comparison with an incorrect rightOperand %d, want %d", comparison.RightOperand, wantedRightOperand)
 	}
 	if ok != wantedOk {
-		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+		t.Errorf("parseComparison returns incorrect ok %t", ok)
 	}
 }
 
@@ -58,7 +60,7 @@ func TestParseComparisonSansOperator(t *testing.T) {
 	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
-		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+		t.Errorf("parseComparison returns incorrect ok %t", ok)
 	}
 }
 
@@ -70,7 +72,7 @@ func TestParseComparisonSansRightOperand(t *testing.T) {
 	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
-		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+		t.Errorf("parseComparison returns incorrect ok %t", ok)
 	}
 }
 
@@ -82,6 +84,37 @@ func TestParseComparisonSansLeftOperand(t *testing.T) {
 	_, ok := parseComparison(s)
 
 	if ok != wantedOk {
-		t.Errorf("parseComparison returns incorrect ok %t, want %t", ok, wantedOk)
+		t.Errorf("parseComparison returns incorrect ok %t", ok)
+	}
+}
+
+func areComparisonsEqual(left, right Comparison) bool {
+	return left.LeftOperand == right.LeftOperand && left.Operator == right.Operator && left.RightOperand == right.RightOperand
+}
+
+// Test that parseMatcher parses a valid matcher correctly.
+func TestParseMatcher(t *testing.T) {
+	matcher, ok := parseMatcher("part1 == 557 & part2 != 365")
+
+	wantedLeftComparison := Comparison{
+		LeftOperand:  Part1,
+		Operator:     EqualToOperator,
+		RightOperand: 557,
+	}
+	wantedRightComparison := Comparison{
+		LeftOperand:  Part2,
+		Operator:     UnequalToOperator,
+		RightOperand: 365,
+	}
+	wantedOk := true
+
+	if !areComparisonsEqual(wantedLeftComparison, matcher.LeftComparison) {
+		t.Error("parseMatcher returns a matcher with an invalid LeftComparison")
+	}
+	if !areComparisonsEqual(wantedRightComparison, matcher.RightComparison) {
+		t.Error("parseMatcher returns a matcher with an invalid RightComparison")
+	}
+	if ok != wantedOk {
+		t.Errorf("parseMatcher returns incorrect ok %t", ok)
 	}
 }
