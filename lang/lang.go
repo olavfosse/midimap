@@ -1,5 +1,6 @@
-// Functions for parsing midimap-lang
-// A prerequisite for understanding this code, is to be familiar with midimap-lang, see midimap-lang.md for a tutorial/specification.
+// Functions for parsing midimap-lang code.
+//
+// Before reading this code it is advised that you read through and comprehend the midimap-lang specification.
 package lang
 
 import (
@@ -35,12 +36,10 @@ type Comparison struct {
 	RightOperand int64
 }
 
-// parseComparison parses a comparison of the following form.
-// {part1,part2}{<,<=,==,!=,>=,>}<integer>
-// Spaces may be intersped anywhere without changing the result.
-// If s is not of the specified form, it returns comparison, false otherwise it returns comparison, true.
-// NB: As of now this function returns a Comparison struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
-func parseComparison(s string) (Comparison, bool) {
+// parseCOMPARISON parses a COMPARISON as specified in Section 1.2.1.1 COMPARISONS of the midimap-lang specification.
+// If s is a valid COMPARISON as described by the specification, parseCOMPARISON returns comparison, true.
+// Otherwise parseCOMPARISON returns comparison, false.
+func parseCOMPARISON(s string) (Comparison, bool) {
 	s = strings.ReplaceAll(s, " ", "") // Remove spaces
 
 	var comparison Comparison
@@ -128,11 +127,11 @@ func parseMatcher(s string) (Matcher, bool) {
 
 	// parse comparisons from before & and after &
 	// report if parsing comparisons failed
-	matcher.LeftComparison, ok = parseComparison(left)
+	matcher.LeftComparison, ok = parseCOMPARISON(left)
 	if !ok {
 		return matcher, false
 	}
-	matcher.RightComparison, ok = parseComparison(right)
+	matcher.RightComparison, ok = parseCOMPARISON(right)
 	if !ok {
 		return matcher, false
 	}
