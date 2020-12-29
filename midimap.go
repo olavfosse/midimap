@@ -2,12 +2,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
 
 	"./lang"
 	"./press"
-	"github.com/micmonay/keybd_event"
 	"github.com/rakyll/portmidi"
 )
 
@@ -66,68 +67,31 @@ func main() {
 	}
 	defer in.Close()
 
+	// Parse mappings
+	var r *bufio.Reader
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "usage: midimap map")
+		os.Exit(1)
+	}
+	mapFile, err := os.Open(os.Args[1])
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
 	var mappings []lang.Mapping
-	mappings = append(mappings, lang.Mapping{
-		Matcher: lang.Matcher{
-			LeftComparison: lang.Comparison{
-				LeftOperand:  lang.Part1,
-				Operator:     lang.EqualToOperator,
-				RightOperand: 48,
-			},
-			RightComparison: lang.Comparison{
-				LeftOperand:  lang.Part2,
-				Operator:     lang.UnequalToOperator,
-				RightOperand: 64,
-			},
-		},
-		KeyCode: keybd_event.VK_E,
-	})
-	mappings = append(mappings, lang.Mapping{
-		Matcher: lang.Matcher{
-			LeftComparison: lang.Comparison{
-				LeftOperand:  lang.Part1,
-				Operator:     lang.EqualToOperator,
-				RightOperand: 38,
-			},
-			RightComparison: lang.Comparison{
-				LeftOperand:  lang.Part2,
-				Operator:     lang.UnequalToOperator,
-				RightOperand: 64,
-			},
-		},
-		KeyCode: keybd_event.VK_F,
-	})
-	mappings = append(mappings, lang.Mapping{
-		Matcher: lang.Matcher{
-			LeftComparison: lang.Comparison{
-				LeftOperand:  lang.Part1,
-				Operator:     lang.EqualToOperator,
-				RightOperand: 43,
-			},
-			RightComparison: lang.Comparison{
-				LeftOperand:  lang.Part2,
-				Operator:     lang.UnequalToOperator,
-				RightOperand: 64,
-			},
-		},
-		KeyCode: keybd_event.VK_J,
-	})
-	mappings = append(mappings, lang.Mapping{
-		Matcher: lang.Matcher{
-			LeftComparison: lang.Comparison{
-				LeftOperand:  lang.Part1,
-				Operator:     lang.EqualToOperator,
-				RightOperand: 45,
-			},
-			RightComparison: lang.Comparison{
-				LeftOperand:  lang.Part2,
-				Operator:     lang.UnequalToOperator,
-				RightOperand: 64,
-			},
-		},
-		KeyCode: keybd_event.VK_I,
-	})
+	r = bufio.NewReader(mapFile)
+	for {
+		mapping, err := lang.NextMapping(r)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+		}
+		mappings = append(mappings, mapping)
+	}
 
+	// Process MIDI events
 	for {
 		events, err := in.Read(1024)
 		if err != nil && err != portmidi.ErrSysExOverflow {
