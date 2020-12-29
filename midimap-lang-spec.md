@@ -7,4 +7,12 @@ A COMMENT is a line which has no impact on the behaviour of the program. Any lin
 ### 1.2 MAPPINGS
 A MAPPING is a line which instructs the program to map incoming MIDI events to a simulated keypress with *some* keycode if *some* criteria is met. Every line which is not a COMMENT is a MAPPING.
 
-A MAPPING is of the form "MATCHER -> KEYCODE". The KEYCODE specifies the keycode of the keypress that will be simulated if the criteria met. The MATCHER specifies the criteria.
+A MAPPING is of the form "MATCHER -> KEYCODE".
+#### 1.2.1 MATCHERS
+A MATCHER specifies the criteria required by its parent MAPPING to simulate a keypress.
+
+A MATCHER is of the form "COMPARISON && COMPARISON" or of the form "COMPARISON || COMPARISON".
+#### 1.2.2 KEYCODES
+A KEYCODE specifies the keycode which its parent MAPPING will simulate a keypress with if the criteria specified by its MATCHER is fulfilled.
+
+A KEYCODE is an integer represented by a series.
