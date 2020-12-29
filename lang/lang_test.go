@@ -92,7 +92,7 @@ func areComparisonsEqual(left, right Comparison) bool {
 	return left.LeftOperand == right.LeftOperand && left.Operator == right.Operator && left.RightOperand == right.RightOperand
 }
 
-// Test that parseMatcher parses a valid matcher correctly.
+// Test that parseMATCHER parses a valid matcher correctly.
 func TestParseMatcher(t *testing.T) {
 	wantedLeftComparison := Comparison{
 		LeftOperand:  Part1,
@@ -106,49 +106,49 @@ func TestParseMatcher(t *testing.T) {
 	}
 	wantedOk := true
 
-	matcher, ok := parseMatcher("part1 == 557 & part2 != 365")
+	matcher, ok := parseMATCHER("part1 == 557 & part2 != 365")
 
 	if !areComparisonsEqual(wantedLeftComparison, matcher.LeftComparison) {
-		t.Error("parseMatcher returns a matcher with an invalid LeftComparison")
+		t.Error("parseMATCHER returns a matcher with an invalid LeftComparison")
 	}
 	if !areComparisonsEqual(wantedRightComparison, matcher.RightComparison) {
-		t.Error("parseMatcher returns a matcher with an invalid RightComparison")
+		t.Error("parseMATCHER returns a matcher with an invalid RightComparison")
 	}
 	if ok != wantedOk {
-		t.Errorf("parseMatcher returns incorrect ok %t", ok)
+		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, lacking a logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a logical and "&", correctly.
 func TestParseMatcherSansLogicalAnd(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMatcher("part1 == 20 part2 != 03")
+	_, ok := parseMATCHER("part1 == 20 part2 != 03")
 
 	if ok != wantedOk {
-		t.Errorf("parseMatcher returns incorrect ok %t", ok)
+		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, lacking a comparison before logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a comparison before logical and "&", correctly.
 func TestParseMatcherSansLeftComparison(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMatcher("&part1<789")
+	_, ok := parseMATCHER("&part1<789")
 
 	if ok != wantedOk {
-		t.Errorf("parseMatcher returns incorrect ok %t", ok)
+		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, lacking a comparison after logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a comparison after logical and "&", correctly.
 func TestParseMatcherSansRightComparison(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMatcher("part1>53&")
+	_, ok := parseMATCHER("part1>53&")
 
 	if ok != wantedOk {
-		t.Errorf("parseMatcher returns incorrect ok %t", ok)
+		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
 	}
 }
 

@@ -87,10 +87,6 @@ func parseCOMPARISON(s string) (Comparison, bool) {
 	return comparison, true
 }
 
-// Currently this requires the matchers to be of the following form:
-// {part1,part2}{<,<=,==,!=,>=,>}integer & {part1,part2}{<,<=,==,!=,>=,>}integer
-// That only covers a subset of all legal matchers according to the spec.
-// I will update this to behave as specified in the spec when I learn how to do polymorphism(presumably with interfaces) in go.
 type Matcher struct {
 	LeftComparison  Comparison
 	RightComparison Comparison
@@ -110,12 +106,10 @@ func beforeAndAfter(r *regexp.Regexp, s string) (string, string, bool) {
 
 }
 
-// parseMatcher parses a matcher of the following form.
-// comparison&comparison
-// Spaces may be intersped anywhere without changing the result.
-// If s is of the specified form, it returns matcher, true otherwise it returns matcher, false.
-// NB: As of now this function returns a Matcher struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
-func parseMatcher(s string) (Matcher, bool) {
+// parseMATCHER parses a MATCHER as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
+// If s is a valid MATCHER as described by the specification, parseMATCHER returns matcher, true.
+// Otherwise parseMATCHER returns matcher, false.
+func parseMATCHER(s string) (Matcher, bool) {
 	var matcher Matcher
 	// split on &
 	r := regexp.MustCompilePOSIX("&")
@@ -169,7 +163,7 @@ func parseMapping(s string) (Mapping, bool) {
 	if !ok {
 		return mapping, false
 	}
-	mapping.Matcher, ok = parseMatcher(before)
+	mapping.Matcher, ok = parseMATCHER(before)
 	if !ok {
 		return mapping, false
 	}
