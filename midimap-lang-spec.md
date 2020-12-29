@@ -17,7 +17,17 @@ A MATCHER is of the form "COMPARISON && COMPARISON" or of the form "COMPARISON |
 "COMPARISON && COMPARISON" means that the criteria, specified by the leftmost COMPARISON and the criteria specified by the rightmost COMPARISON, has to be fulfilled for the parent MAPPING to simulate a keypress.
 
 "COMPARISON || COMPARISON" means that the criteria, specified by the leftmost COMPARISON or the criteria specified by the rightmost COMPARISON or both of them, has to be fulfilled for the parent MAPPING to simulate a keypress.
+##### 1.2.1.1 COMPARISONS
+A COMPARISON is a string used by MATCHERS to determine its criteria.
+
+The form of a COMPARISON is "LEFTOPERAND OPERATOR RIGHTOPERAND".
+
+LEFTOPERAND is "data1" or "data2".
+
+OPERATOR is <, <=, ==, !=, >= or >.
+
+RIGHTOPERAND is an integer represented by a series of decimal digits.
 #### 1.2.2 KEYCODES
 A KEYCODE specifies the keycode which its parent MAPPING will simulate a keypress with if the criteria specified by its MATCHER is fulfilled.
 
-A KEYCODE is an integer represented by a series.
+A KEYCODE is an integer represented by a series of decimal digits.
