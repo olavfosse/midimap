@@ -6,7 +6,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -186,25 +185,28 @@ func parseMapping(s string) (Mapping, bool) {
 // NextMapping parses a midimap-lang mapping from r.
 // NextMapping reads lines until it encounters a non-comment line or EOF.
 // If EOF is reached NextMapping returns (nil, io.EOF).
-// If line is not a valid mapping return (nil, invalidMappingError)
-func NextMapping(f *os.File) (Mapping, error) {
+// If line is not a valid mapping return (nil, err), where err is an error describing where the error occured.
+func NextMapping(r *bufio.Reader) (Mapping, error) {
 	var mapping Mapping
-	// NB: Too long lines may cause a problem. See below line for why. If this becomes a problem look into using (buf)io.Reader instead.
-	// go doc bufio.Scanner: Scanning stops unrecoverably at ... a token too large to fit in the buffer.
-	s := bufio.NewScanner(f)
-	for s.Scan() && strings.HasPrefix(s.Text(), "#") {
-	}
-
-	if s.Err() != nil {
-		return mapping, s.Err()
+	var line string
+	for {
+		s, err := r.ReadString('\n')
+		if err != nil {
+			return mapping, err
+		}
+		line = s[:len(s)-1]
+		// skip comments
+		if !strings.HasPrefix(line, "#") {
+			break
+		}
 	}
 
 	// I wonder if there is an idiom to return all the return values of a called function.
 	// It sounds a bit sugarish, so probably not.
-	mapping, ok := parseMapping(s.Text())
-	err := error(nil)
+	mapping, ok := parseMapping(line)
+	var err error = nil
 	if !ok {
-		err = errors.New(fmt.Sprintf("invalid mapping %q", s.Text()))
+		err = errors.New(fmt.Sprintf("invalid mapping %q", line))
 	}
 
 	return mapping, err
