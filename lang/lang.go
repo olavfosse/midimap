@@ -20,7 +20,6 @@ const (
 	UnequalToOperator
 	GreaterThanOrEqualToOperator
 	GreaterThanOperator
-	NoOperator = -1
 )
 
 type Part1OrPart2 int
