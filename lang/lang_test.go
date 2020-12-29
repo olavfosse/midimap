@@ -172,45 +172,45 @@ func TestParseMapping(t *testing.T) {
 	wantedKeyCode := 123
 	wantedOk := true
 
-	mapping, ok := parseMapping("part1 == 1 & part2 != 2 -> 123")
+	mapping, ok := parseMAPPING("part1 == 1 & part2 != 2 -> 123")
 
 	if !areMatchersEqual(mapping.Matcher, wantedMatcher) {
-		t.Error("parseMapping returns mapping with incorrect matcher")
+		t.Error("parseMAPPING returns mapping with incorrect matcher")
 	}
 	if mapping.KeyCode != wantedKeyCode {
-		t.Error("parseMapping returns mapping with incorrect keycode")
+		t.Error("parseMAPPING returns mapping with incorrect keycode")
 	}
 	if ok != wantedOk {
-		t.Errorf("parseMapping returns incorrect ok %t", ok)
+		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
 	}
 }
 
 func TestParseMappingSansSeparator(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMapping("part2 != 3 & part2 >= 2 123")
+	_, ok := parseMAPPING("part2 != 3 & part2 >= 2 123")
 
 	if ok != wantedOk {
-		t.Errorf("parseMapping returns incorrect ok %t", ok)
+		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
 	}
 }
 
 func TestParseMappingSansMatcher(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMapping("-> 123")
+	_, ok := parseMAPPING("-> 123")
 
 	if ok != wantedOk {
-		t.Errorf("parseMapping returns incorrect ok %t", ok)
+		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
 	}
 }
 
 func TestParseMappingSansKeycode(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMapping("part2 != 3 & part2 ->")
+	_, ok := parseMAPPING("part2 != 3 & part2 ->")
 
 	if ok != wantedOk {
-		t.Errorf("parseMapping returns incorrect ok %t", ok)
+		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
 	}
 }

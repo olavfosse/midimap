@@ -151,12 +151,10 @@ type Mapping struct {
 	KeyCode int
 }
 
-// parseMapping parses a mapping of the following form.
-// matcher->keycode
-// Spaces may be intersped anywhere without changing the result.
-// If s is of the specified form, it returns mapping, true otherwise it returns mapping, false.
-// NB: As of now this function returns a Mapping struct even when it fails to construct it properly. That does feel a bit unclean, but I don't think it justifies using a struct pointer and nil.
-func parseMapping(s string) (Mapping, bool) {
+// parseMAPPING parses a MAPPING as specified in Section 1.2 MAPPINGS of the midimap-lang specification.
+// If s is a valid MAPPING as described by the specification, parseMAPPING returns mapping, true.
+// Otherwise parseMAPPING returns mapping, false.
+func parseMAPPING(s string) (Mapping, bool) {
 	var mapping Mapping
 	r := regexp.MustCompilePOSIX("- *>")
 	before, after, ok := beforeAndAfter(r, s)
@@ -195,7 +193,7 @@ func NextMapping(r *bufio.Reader) (Mapping, error) {
 
 	// I wonder if there is an idiom to return all the return values of a called function.
 	// It sounds a bit sugarish, so probably not.
-	mapping, ok := parseMapping(line)
+	mapping, ok := parseMAPPING(line)
 	var err error = nil
 	if !ok {
 		err = errors.New(fmt.Sprintf("invalid mapping %q", line))
