@@ -3,8 +3,6 @@ package press
 
 import (
 	"log"
-	"runtime"
-	"time"
 
 	"github.com/micmonay/keybd_event"
 )
@@ -16,11 +14,6 @@ func init() {
 	kb, err = keybd_event.NewKeyBonding()
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	// For linux, it is important to wait 2 seconds, see https://github.com/micmonay/keybd_event/issues/25
-	if runtime.GOOS == "linux" {
-		time.Sleep(2 * time.Second)
 	}
 }
 
