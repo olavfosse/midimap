@@ -87,8 +87,17 @@ func parseCOMPARISON(s string) (Comparison, bool) {
 	return comparison, true
 }
 
+type LogicalOperator int
+
+const (
+	LogicalAndOperator LogicalOperator = iota
+	LogicalOrOperator
+	NoLogicalOperator LogicalOperator = -1
+)
+
 type Matcher struct {
 	LeftComparison  Comparison
+	Operator        LogicalOperator
 	RightComparison Comparison
 }
 
@@ -106,21 +115,40 @@ func beforeAndAfter(r *regexp.Regexp, s string) (string, string, bool) {
 
 }
 
+// beforeAndAfterLogicalOperator splits a string into two substrings, one before a logical operator and the other after it.
+// If s contains "&&" beforeAndAfterLogicalOperator returns before, after, LogicalAndOperator, where before is the substring of s which appear before "&&" and after is the substring of s which appear after "&&".
+// Otherwise if s contains "||" beforeAndAfterLogicalOperator returns before, after, LogicalOrOperator, where before is the substring of s which appear before "||" and after is the substring of s which appear after it.
+// If s contains neither "||" nor "&&", beforeAndAfterLogicalOperator returns "", "", NoLogicalOperator
+func beforeAndAfterLogicalOperator(s string) (string, string, LogicalOperator) {
+	logicalAndRegexp := regexp.MustCompilePOSIX("&&")
+	logicalOrRegexp := regexp.MustCompilePOSIX(`\|\|`)
+
+	before, after, ok := beforeAndAfter(logicalAndRegexp, s)
+	if ok {
+		return before, after, LogicalAndOperator
+	}
+
+	before, after, ok = beforeAndAfter(logicalOrRegexp, s)
+	if ok {
+		return before, after, LogicalOrOperator
+	}
+
+	return "", "", NoLogicalOperator
+}
+
 // parseMATCHER parses a MATCHER as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
 // If s is a valid MATCHER as described by the specification, parseMATCHER returns matcher, true.
 // Otherwise parseMATCHER returns matcher, false.
 func parseMATCHER(s string) (Matcher, bool) {
 	var matcher Matcher
-	// split on &
-	r := regexp.MustCompilePOSIX("&&")
-	left, right, ok := beforeAndAfter(r, s)
-	// report if the split failed
-	if !ok { // missing logical and "&"
+
+	var left, right string
+	left, right, matcher.Operator = beforeAndAfterLogicalOperator(s)
+	if matcher.Operator == NoLogicalOperator {
 		return matcher, false
 	}
 
-	// parse comparisons from before & and after &
-	// report if parsing comparisons failed
+	var ok bool
 	matcher.LeftComparison, ok = parseCOMPARISON(left)
 	if !ok {
 		return matcher, false

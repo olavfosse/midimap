@@ -92,13 +92,14 @@ func areComparisonsEqual(left, right Comparison) bool {
 	return left.LeftOperand == right.LeftOperand && left.Operator == right.Operator && left.RightOperand == right.RightOperand
 }
 
-// Test that parseMATCHER parses a valid matcher correctly.
-func TestParseMatcher(t *testing.T) {
+// Test that parseMATCHER parses a valid matcher, where the logical operator is a logical and-operator "&&", correctly.
+func TestParseLogicalAndMatcher(t *testing.T) {
 	wantedLeftComparison := Comparison{
 		LeftOperand:  Part1,
 		Operator:     EqualToOperator,
 		RightOperand: 557,
 	}
+	wantedOperator := LogicalAndOperator
 	wantedRightComparison := Comparison{
 		LeftOperand:  Part2,
 		Operator:     UnequalToOperator,
@@ -110,6 +111,39 @@ func TestParseMatcher(t *testing.T) {
 
 	if !areComparisonsEqual(wantedLeftComparison, matcher.LeftComparison) {
 		t.Error("parseMATCHER returns a matcher with an invalid LeftComparison")
+	}
+	if wantedOperator != matcher.Operator {
+		t.Errorf("parseMATCHER returns a matcher with an invalid Operator %v, want %v", matcher.Operator, wantedOperator)
+	}
+	if !areComparisonsEqual(wantedRightComparison, matcher.RightComparison) {
+		t.Error("parseMATCHER returns a matcher with an invalid RightComparison")
+	}
+	if ok != wantedOk {
+		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
+	}
+}
+
+func TestParseLogicalOrMatcher(t *testing.T) {
+	wantedLeftComparison := Comparison{
+		LeftOperand:  Part2,
+		Operator:     UnequalToOperator,
+		RightOperand: 93,
+	}
+	wantedOperator := LogicalOrOperator
+	wantedRightComparison := Comparison{
+		LeftOperand:  Part1,
+		Operator:     EqualToOperator,
+		RightOperand: 122,
+	}
+	wantedOk := true
+
+	matcher, ok := parseMATCHER("part2 != 93 || part1 == 122")
+
+	if !areComparisonsEqual(wantedLeftComparison, matcher.LeftComparison) {
+		t.Error("parseMATCHER returns a matcher with an invalid LeftComparison")
+	}
+	if wantedOperator != matcher.Operator {
+		t.Errorf("parseMATCHER returns a matcher with an invalid Operator %v, want %v", matcher.Operator, wantedOperator)
 	}
 	if !areComparisonsEqual(wantedRightComparison, matcher.RightComparison) {
 		t.Error("parseMATCHER returns a matcher with an invalid RightComparison")
@@ -153,7 +187,10 @@ func TestParseMatcherSansRightComparison(t *testing.T) {
 }
 
 func areMatchersEqual(left, right Matcher) bool {
-	return areComparisonsEqual(left.LeftComparison, right.LeftComparison) && areComparisonsEqual(left.RightComparison, right.RightComparison)
+	areLeftComparisonsEqual := areComparisonsEqual(left.LeftComparison, right.LeftComparison)
+	areOperatorsEqual := left.Operator == right.Operator
+	areRightComparisonsEqual := areComparisonsEqual(left.RightComparison, right.RightComparison)
+	return areLeftComparisonsEqual && areOperatorsEqual && areRightComparisonsEqual
 }
 
 func TestParseMapping(t *testing.T) {
