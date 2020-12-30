@@ -13,6 +13,33 @@ import (
 )
 
 func main() {
+	// Parse arguments
+	if len(os.Args) != 2 {
+		fmt.Fprintln(os.Stderr, "usage: midimap map")
+		os.Exit(1)
+	}
+	mapFileName := os.Args[1]
+
+	// Parse midi map
+	mapFile, err := os.Open(mapFileName)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+	r := bufio.NewReader(mapFile)
+	var mappings []lang.Mapping
+	for {
+		mapping, err := lang.NextMAPPING(r)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+		}
+		mappings = append(mappings, mapping)
+	}
+
+	// Initialize midi device
 	portmidi.Initialize()
 	defer portmidi.Terminate()
 
@@ -66,30 +93,6 @@ func main() {
 		os.Exit(1)
 	}
 	defer in.Close()
-
-	// Parse mappings
-	var r *bufio.Reader
-	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "usage: midimap map")
-		os.Exit(1)
-	}
-	mapFile, err := os.Open(os.Args[1])
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
-	}
-	var mappings []lang.Mapping
-	r = bufio.NewReader(mapFile)
-	for {
-		mapping, err := lang.NextMAPPING(r)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-		}
-		mappings = append(mappings, mapping)
-	}
 
 	// Process MIDI events
 	for {
