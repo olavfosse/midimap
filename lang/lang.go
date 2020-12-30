@@ -172,11 +172,11 @@ func parseMAPPING(s string) (Mapping, bool) {
 	return mapping, true
 }
 
-// NextMapping parses a midimap-lang mapping from r.
-// NextMapping reads lines until it encounters a non-comment line or EOF.
-// If EOF is reached NextMapping returns (nil, io.EOF).
-// If line is not a valid mapping return (nil, err), where err is an error describing where the error occured.
-func NextMapping(r *bufio.Reader) (Mapping, error) {
+// NextMAPPING attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a MAPPING is reached or an io error occurs.
+// If an io error occured NextMAPPING returns mapping, ioError.
+// If an invalid mapping is reached NextMAPPING returns mapping, err, where err is an error describing how the mapping is invalid.
+// Otherwise NextMAPPING returns mapping, nil.
+func NextMAPPING(r *bufio.Reader) (Mapping, error) {
 	var mapping Mapping
 	var line string
 	for {

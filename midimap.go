@@ -81,7 +81,7 @@ func main() {
 	var mappings []lang.Mapping
 	r = bufio.NewReader(mapFile)
 	for {
-		mapping, err := lang.NextMapping(r)
+		mapping, err := lang.NextMAPPING(r)
 		if err == io.EOF {
 			break
 		}
