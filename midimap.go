@@ -113,9 +113,9 @@ func main() {
 // evaluateComparison returns true if the comparison c evaluates to true in the context of event e in midimap-lang. Otherwise it returns false.
 func evaluateComparison(c lang.Comparison, e portmidi.Event) bool {
 	var data int64
-	if c.LeftOperand == lang.Part1 {
+	if c.LeftOperand == lang.Data1 {
 		data = e.Data1
-	} else if c.LeftOperand == lang.Part2 {
+	} else if c.LeftOperand == lang.Data2 {
 		data = e.Data2
 	} else {
 		fmt.Fprintf(os.Stderr, "This should never happen, you have found a bug")

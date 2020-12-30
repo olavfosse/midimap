@@ -3,17 +3,17 @@
 # electronic drum set.
 #
 # For each registered drum hit two signals are emitted, the last of which has a
-# part2 of 64. To prevent triggering two {don,ka}s per drum hit we therefore
-# ignore all signals where part2 is 64.
+# data2 of 64. To prevent triggering two {don,ka}s per drum hit we therefore
+# ignore all signals where data2 is 64.
 #
 # My Taiko no Tatsujin-like game interprets e as left ka, i as right ka, f as
 # left don and j as right don.
 #
 # Map tom 1 to e
-part1 == 48 && part2 != 64 -> 18
+data1 == 48 && data2 != 64 -> 18
 # Map tom 2 to i
-part1 == 45 && part2 != 64 -> 23
+data1 == 45 && data2 != 64 -> 23
 # Map snare to f
-part1 == 38 && part2 != 64 -> 33
+data1 == 38 && data2 != 64 -> 33
 # Map floor tom to j
-part1 == 43 && part2 != 64 -> 36
+data1 == 43 && data2 != 64 -> 36

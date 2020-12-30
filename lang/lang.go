@@ -23,15 +23,15 @@ const (
 	GreaterThanOperator
 )
 
-type Part1OrPart2 int
+type Data1OrData2 int
 
 const (
-	Part1 Part1OrPart2 = iota
-	Part2
+	Data1 Data1OrData2 = iota
+	Data2
 )
 
 type Comparison struct {
-	LeftOperand  Part1OrPart2
+	LeftOperand  Data1OrData2
 	Operator     ComparisonOperator
 	RightOperand int64
 }
@@ -44,14 +44,14 @@ func parseCOMPARISON(s string) (Comparison, bool) {
 
 	var comparison Comparison
 	switch {
-	case strings.HasPrefix(s, "part1"):
-		comparison.LeftOperand = Part1
-	case strings.HasPrefix(s, "part2"):
-		comparison.LeftOperand = Part2
+	case strings.HasPrefix(s, "data1"):
+		comparison.LeftOperand = Data1
+	case strings.HasPrefix(s, "data2"):
+		comparison.LeftOperand = Data2
 	default:
 		return comparison, false
 	}
-	s = s[len("partx"):] // Discard parsed leftOperand
+	s = s[len("datax"):] // Discard parsed leftOperand
 
 	var operatorLength int
 	switch {
