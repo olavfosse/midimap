@@ -144,6 +144,9 @@ func evaluateComparison(c lang.Comparison, e portmidi.Event) bool {
 
 // doesMatcherMatchEvent returns true if m matches e, otherwise it returns false.
 func doesMatcherMatchEvent(m lang.Matcher, e portmidi.Event) bool {
+	if m.Operator == lang.LogicalOrOperator {
+		return evaluateComparison(m.LeftComparison, e) || evaluateComparison(m.RightComparison, e)
+	}
 	return evaluateComparison(m.LeftComparison, e) && evaluateComparison(m.RightComparison, e)
 }
 
