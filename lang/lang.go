@@ -161,11 +161,10 @@ func parseMATCHER(s string) (Matcher, bool) {
 	return matcher, true
 }
 
-// parseKeyCode parses a KeyCode of the following form.
-// integer
-// Spaces may be be intersped anywhere without changing the result.
-// If s is of the specified form, it returns keyCode, true, otherwise it returns keyCode, false.
-func parseKeyCode(s string) (int, bool) {
+// parseKEYCODE parses a KEYCODE as specified in Section 1.2.2 KEYCODES of the midimap-lang specification.
+// If s is a valid KEYCODE as described by the specification, parseKEYCODE returns keyCode, true.
+// Otherwise parseKEYCODE returns keyCode, false.
+func parseKEYCODE(s string) (int, bool) {
 	s = strings.ReplaceAll(s, " ", "") // Remove spaces
 	keyCode, err := strconv.Atoi(s)
 	if err != nil {
@@ -193,7 +192,7 @@ func parseMAPPING(s string) (Mapping, bool) {
 	if !ok {
 		return mapping, false
 	}
-	mapping.KeyCode, ok = parseKeyCode(after)
+	mapping.KeyCode, ok = parseKEYCODE(after)
 	if !ok {
 		return mapping, false
 	}
