@@ -10,10 +10,10 @@
 # left don and j as right don.
 #
 # Map tom 1 to e
-part1 == 48 & part2 != 64 -> 18
+part1 == 48 && part2 != 64 -> 18
 # Map tom 2 to i
-part1 == 45 & part2 != 64 -> 23
+part1 == 45 && part2 != 64 -> 23
 # Map snare to f
-part1 == 38 & part2 != 64 -> 33
+part1 == 38 && part2 != 64 -> 33
 # Map floor tom to j
-part1 == 43 & part2 != 64 -> 36
+part1 == 43 && part2 != 64 -> 36

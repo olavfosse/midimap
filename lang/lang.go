@@ -112,7 +112,7 @@ func beforeAndAfter(r *regexp.Regexp, s string) (string, string, bool) {
 func parseMATCHER(s string) (Matcher, bool) {
 	var matcher Matcher
 	// split on &
-	r := regexp.MustCompilePOSIX("&")
+	r := regexp.MustCompilePOSIX("&&")
 	left, right, ok := beforeAndAfter(r, s)
 	// report if the split failed
 	if !ok { // missing logical and "&"

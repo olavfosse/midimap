@@ -106,7 +106,7 @@ func TestParseMatcher(t *testing.T) {
 	}
 	wantedOk := true
 
-	matcher, ok := parseMATCHER("part1 == 557 & part2 != 365")
+	matcher, ok := parseMATCHER("part1 == 557 && part2 != 365")
 
 	if !areComparisonsEqual(wantedLeftComparison, matcher.LeftComparison) {
 		t.Error("parseMATCHER returns a matcher with an invalid LeftComparison")
@@ -119,7 +119,7 @@ func TestParseMatcher(t *testing.T) {
 	}
 }
 
-// Test that parseMATCHER parses an invalid matcher, lacking a logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a logical and "&&", correctly.
 func TestParseMatcherSansLogicalAnd(t *testing.T) {
 	wantedOk := false
 
@@ -130,22 +130,22 @@ func TestParseMatcherSansLogicalAnd(t *testing.T) {
 	}
 }
 
-// Test that parseMATCHER parses an invalid matcher, lacking a comparison before logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a comparison before logical and "&&", correctly.
 func TestParseMatcherSansLeftComparison(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMATCHER("&part1<789")
+	_, ok := parseMATCHER("&&part1<789")
 
 	if ok != wantedOk {
 		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
 	}
 }
 
-// Test that parseMATCHER parses an invalid matcher, lacking a comparison after logical and "&", correctly.
+// Test that parseMATCHER parses an invalid matcher, lacking a comparison after logical and "&&", correctly.
 func TestParseMatcherSansRightComparison(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMATCHER("part1>53&")
+	_, ok := parseMATCHER("part1>53&&")
 
 	if ok != wantedOk {
 		t.Errorf("parseMATCHER returns incorrect ok %t", ok)
@@ -172,7 +172,7 @@ func TestParseMapping(t *testing.T) {
 	wantedKeyCode := 123
 	wantedOk := true
 
-	mapping, ok := parseMAPPING("part1 == 1 & part2 != 2 -> 123")
+	mapping, ok := parseMAPPING("part1 == 1 && part2 != 2 -> 123")
 
 	if !areMatchersEqual(mapping.Matcher, wantedMatcher) {
 		t.Error("parseMAPPING returns mapping with incorrect matcher")
@@ -188,7 +188,7 @@ func TestParseMapping(t *testing.T) {
 func TestParseMappingSansSeparator(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMAPPING("part2 != 3 & part2 >= 2 123")
+	_, ok := parseMAPPING("part2 != 3 && part2 >= 2 123")
 
 	if ok != wantedOk {
 		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
@@ -208,7 +208,7 @@ func TestParseMappingSansMatcher(t *testing.T) {
 func TestParseMappingSansKeycode(t *testing.T) {
 	wantedOk := false
 
-	_, ok := parseMAPPING("part2 != 3 & part2 ->")
+	_, ok := parseMAPPING("part2 != 3 && part2 ->")
 
 	if ok != wantedOk {
 		t.Errorf("parseMAPPING returns incorrect ok %t", ok)
