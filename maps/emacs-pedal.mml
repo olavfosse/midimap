@@ -1,0 +1,39 @@
+#!/usr/local/bin/midimap
+# This map is used to ease little finger pain, while using GNU Emacs, by
+# utilizing the TD-1 hi-hat foot pedal to simulate pressing the GNU Emacs
+# modifier keys.
+#
+# When pressing the pedal, two categories of MIDI events are emitted. The table
+# below describes what each of them represents.
+#
+# |-----------+----------------------------------------------------------------|
+# | Category  | Description                                                    |
+# |-----------+----------------------------------------------------------------|
+# | Positonal | Describes how much the how much the pedal is pressed down. The |
+# |           | data1 for this category is always 4 and the data2 is between 0 |
+# |           | and 90. If data2 is 90 the pedal is pressed all the way down   |
+# |           | and if the data2 is 0 the pedal is all the way up. These       |
+# |           | events are only emitted while the pedal is moving.             |
+# |           |                                                                |
+# |           | data2 can only be 90 when the pedal is moving downwards and    |
+# |           | data2 can only be 0 if the pedal is moving upwards. The other  |
+# |           | data2 values, 1 to 89 inclusive, are emitted while the pedal   |
+# |           | is beetween the 0 and 90 extremes. The higher the data2 is the |
+# |           | higher the pedal is.                                           |
+# |           |                                                                |
+# |           | No events are emitted while the pedal is not moving.           |
+# |-----------+----------------------------------------------------------------|
+# | Bottom    | If the pedal is pressed all the way down with force above a    |
+# |           | certain threshold, a event with data1 equal to 44 and data2    |
+# |           | equal to 64 is emitted.                                        |
+# |           |                                                                |
+# |           | I cannot measure the exact threshold, but it is the same       |
+# |           | force as required to create an audible hi-hat close sound.     |
+# |           | Note that this signal is emitted in addition to a positional   |
+# |           | event with data2 equal to 90. The bottom event is emitted      |
+# |           | after the positonal event.                                     |
+# |-----------+----------------------------------------------------------------|
+#
+# Map bottom, that is the events belonging to the bottom category described
+# above, to ESC.
+data1 == 44 && data2 == 64 -> 1
