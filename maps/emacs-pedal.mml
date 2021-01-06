@@ -1,4 +1,4 @@
-#!/usr/local/bin/midimap
+#!/usr/bin/env midimap
 # This map is used to ease little finger pain, while using GNU Emacs, by
 # utilizing the TD-1 hi-hat foot pedal to simulate pressing the GNU Emacs
 # modifier keys.

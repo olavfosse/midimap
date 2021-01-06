@@ -1,4 +1,4 @@
-#!/usr/local/go/bin/midimap
+#!/usr/bin/env midimap
 # This map is used for playing Taiko no Tatsujin-like games with the TD-1
 # electronic drum set.
 #
