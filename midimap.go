@@ -29,12 +29,15 @@ func main() {
 	r := bufio.NewReader(mapFile)
 	var mappings []lang.Mapping
 	for {
-		mapping, err := lang.NextMAPPING(r)
+		mapping, err := lang.NextMapping(r)
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
+			// For some reason "ALSA lib seq.c:4176:(snd_seq_event_input_feed) poll: Interrupted system call" is spammed to stderr when running the program. I am yet to figure out the nature of this bug and how to remove it.
+			// Printing these actual errors to stdout is a temporary workaround until this gets fixed.
+			// The "fake alarm" ALSA errors can be discarded by redirecting stderr to /dev/null when running the command.
+			fmt.Fprintf(os.Stdout, "%v\n", err)
 		}
 		mappings = append(mappings, mapping)
 	}

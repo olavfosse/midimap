@@ -218,11 +218,11 @@ func parseMapping(s string) (Mapping, error) {
 	return mapping, nil
 }
 
-// NextMAPPING attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a MAPPING is reached or an io error occurs.
-// If an io error occured NextMAPPING returns mapping, ioError.
-// If an invalid mapping is reached NextMAPPING returns mapping, err, where err is an error describing how the mapping is invalid.
-// Otherwise NextMAPPING returns mapping, nil.
-func NextMAPPING(r *bufio.Reader) (Mapping, error) {
+// NextMapping attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a mapping is reached or an io error occurs.
+// If an io error occured NextMapping returns mapping, ioError.
+// If an invalid mapping is reached NextMapping returns mapping, err, where err is an error describing how the mapping is invalid.
+// Otherwise NextMapping returns mapping, nil.
+func NextMapping(r *bufio.Reader) (Mapping, error) {
 	var mapping Mapping
 	var line string
 	for {
