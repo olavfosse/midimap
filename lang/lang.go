@@ -53,10 +53,10 @@ func skipToNonSpaceCharacter(s *string) (ok bool) {
 // parseComparison parses a comparison as specified in Section 1.2.1.1 COMPARISONS of the midimap-lang specification.
 // If s is a valid comparison as described by the specification, parseComparison returns comparison, true.
 // Otherwise parseComparison returns comparison, false.
+// s may not contain any leading or trailing space.
 func parseComparison(s string) (Comparison, error) {
 	unParsed := s // the characters of s which are yet to be parsed
 
-	skipToNonSpaceCharacter(&unParsed)
 	var comparison Comparison
 	switch {
 	case strings.HasPrefix(unParsed, "data1"):
@@ -153,29 +153,29 @@ func beforeAndAfterLogicalOperator(s string) (string, string, LogicalOperator) {
 	return "", "", NoLogicalOperator
 }
 
-// parseMATCHER parses a MATCHER as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
-// If s is a valid MATCHER as described by the specification, parseMATCHER returns matcher, true.
-// Otherwise parseMATCHER returns matcher, false.
-func parseMATCHER(s string) (Matcher, bool) {
+// parseMatcher parses a matcher as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
+// If s is a valid matcher as described by the specification, parseMatcher returns matcher, true.
+// Otherwise parseMatcher returns matcher, false.
+func parseMatcher(s string) (Matcher, error) {
 	var matcher Matcher
 
 	var left, right string
 	left, right, matcher.Operator = beforeAndAfterLogicalOperator(s)
 	if matcher.Operator == NoLogicalOperator {
-		return matcher, false
+		return matcher, errors.New(fmt.Sprintf("Matcher %q does not have a valid logical operator", s))
 	}
 
 	var err error
-	matcher.LeftComparison, err = parseComparison(left)
+	matcher.LeftComparison, err = parseComparison(strings.TrimSpace(left))
 	if err != nil {
-		return matcher, false
+		return matcher, err
 	}
-	matcher.RightComparison, err = parseComparison(right)
+	matcher.RightComparison, err = parseComparison(strings.TrimSpace(right))
 	if err != nil {
-		return matcher, false
+		return matcher, err
 	}
 
-	return matcher, true
+	return matcher, err
 }
 
 // parseKEYCODE parses a KEYCODE as specified in Section 1.2.2 KEYCODES of the midimap-lang specification.
@@ -205,8 +205,9 @@ func parseMAPPING(s string) (Mapping, bool) {
 	if !ok {
 		return mapping, false
 	}
-	mapping.Matcher, ok = parseMATCHER(before)
-	if !ok {
+	var err error
+	mapping.Matcher, err = parseMatcher(before)
+	if err != nil {
 		return mapping, false
 	}
 	mapping.KeyCode, ok = parseKEYCODE(after)

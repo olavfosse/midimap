@@ -6,6 +6,10 @@ import (
 	"fmt"
 )
 
+/*
+ * parseComparison tests
+ */
+
 // Test that parseComparison parses a valid comparison correctly.
 func TestParseComparisonValid(t *testing.T) {
 	wantedLeftOperand := Data1
@@ -25,7 +29,7 @@ func TestParseComparisonValid(t *testing.T) {
 		t.Errorf("parseComparison returns a comparison with an incorrect rightOperand %d, want %d", comparison.RightOperand, wantedRightOperand)
 	}
 	if err != nil {
-		t.Errorf("parseComparison returns non-nil err")
+		t.Errorf("parseComparison returns non-nil err %q", err)
 	}
 }
 
@@ -72,3 +76,88 @@ func TestParseComparisonInvalidNoRightOperand(t *testing.T) {
 	} else if err.Error() != wantedErr.Error() {
 		t.Errorf("parseComparison returns incorrect err %q, want %q", err, wantedErr)
 	}
+}
+
+/*
+ * parseMatcher tests
+ */
+
+func areComparisonsEqual(left, right Comparison) bool {
+	return left.LeftOperand == right.LeftOperand && left.Operator == right.Operator && left.RightOperand == right.RightOperand
+}
+
+// Test that parseMatcher parses a valid matcher correctly.
+func TestParseMatcherValid(t *testing.T) {
+	wantedLeftComparison := Comparison{
+		LeftOperand:  Data1,
+		Operator:     EqualToOperator,
+		RightOperand: 557,
+	}
+	wantedOperator := LogicalAndOperator
+	wantedRightComparison := Comparison{
+		LeftOperand:  Data2,
+		Operator:     UnequalToOperator,
+		RightOperand: 365,
+	}
+	
+	s := "data1 == 557 && data2 != 365"
+	matcher, err := parseMatcher(s)
+
+	if !areComparisonsEqual(matcher.LeftComparison, wantedLeftComparison) {
+		t.Errorf("parseMatcher returns a matcher with an incorrect LeftComparison %v, want %v", matcher.LeftComparison, wantedLeftComparison)
+	}
+	if matcher.Operator != wantedOperator {
+		t.Errorf("parseMatcher returns a matcher with an incorrect Operator %d, want %d", matcher.Operator, wantedOperator)
+	}
+	if !areComparisonsEqual(matcher.RightComparison, wantedRightComparison) {
+		t.Errorf("parseMatcher returns a matcher with an incorrect RightComparison %v, want %v", matcher.RightComparison, wantedRightComparison)
+	}
+	if err != nil {
+		t.Errorf("parseMatcher returns non-nil err %q", err)
+	}
+}
+
+// Test that parseMatcher parses an invalid matcher, with an invalid left comparison, correctly.
+func TestParseMatcherInvalidInvalidLeftComparison(t *testing.T) {
+	leftComparison := "data1 557"
+	wantedErr := errors.New(fmt.Sprintf("Comparison %q does not have a valid operator", leftComparison))
+	
+	s := leftComparison + " && data2 != 365"
+	_, err := parseMatcher(s)
+
+	if err == nil {
+		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+	}
+}
+
+// Test that parseMatcher parses an invalid matcher, lacking a logical operator, correctly.
+func TestParseMatcherInvalidNoLogicalOperator(t *testing.T) {
+	s := "data1 557 & & data2 != 365"
+
+	wantedErr := errors.New(fmt.Sprintf("Matcher %q does not have a valid logical operator", s))
+
+	_, err := parseMatcher(s)
+
+	if err == nil {
+		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+	}
+}
+
+// Test that parseMatcher parses an invalid matcher, with an invalid right comparison, correctly.
+func TestParseMatcherInvalidInvalidRightComparison(t *testing.T) {
+	rightComparison := "data1 557"
+	wantedErr := errors.New(fmt.Sprintf("Comparison %q does not have a valid operator", rightComparison))
+	
+	s :=  "data2 != 365 && " + rightComparison
+	_, err := parseMatcher(s)
+
+	if err == nil {
+		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+	}
+}
