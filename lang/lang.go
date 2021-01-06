@@ -178,16 +178,16 @@ func parseMatcher(s string) (Matcher, error) {
 	return matcher, err
 }
 
-// parseKEYCODE parses a KEYCODE as specified in Section 1.2.2 KEYCODES of the midimap-lang specification.
-// If s is a valid KEYCODE as described by the specification, parseKEYCODE returns keyCode, true.
-// Otherwise parseKEYCODE returns keyCode, false.
-func parseKEYCODE(s string) (int, bool) {
-	s = strings.ReplaceAll(s, " ", "") // Remove spaces
+// parseKeyCode parses a KEYCODE as specified in Section 1.2.2 KEYCODES of the midimap-lang specification.
+// If s is a valid KEYCODE as described by the specification, parseKeyCode returns keyCode, true.
+// Otherwise parseKeyCode returns keyCode, false.
+// s may not contain any leading or trailing spaces.
+func parseKeyCode(s string) (int, error) {
 	keyCode, err := strconv.Atoi(s)
 	if err != nil {
-		return keyCode, false
+		return keyCode, errors.New(fmt.Sprintf("Key code %q is invalid", s))
 	}
-	return keyCode, true
+	return keyCode, nil
 }
 
 type Mapping struct {
@@ -210,11 +210,11 @@ func parseMAPPING(s string) (Mapping, bool) {
 	if err != nil {
 		return mapping, false
 	}
-	mapping.KeyCode, ok = parseKEYCODE(after)
-	if !ok {
+	mapping.KeyCode, err = parseKeyCode(after)
+	if err != nil {
 		return mapping, false
 	}
-	return mapping, true
+	return mapping, false
 }
 
 // NextMAPPING attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a MAPPING is reached or an io error occurs.

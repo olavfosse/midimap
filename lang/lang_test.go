@@ -161,3 +161,41 @@ func TestParseMatcherInvalidInvalidRightComparison(t *testing.T) {
 		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
 	}
 }
+
+/*
+ * parseKeyCode tests
+ */
+
+// Test that parseKeyCode parses a valid key code correctly.
+func TestParseKeyCodeValid(t *testing.T) {
+	wantedKeyCode :=1
+	
+	s := "1" // ESC
+	
+	keyCode, err := parseKeyCode(s)
+
+	if keyCode != wantedKeyCode {
+		t.Errorf("parseKeyCode returns incorrect key code %d, want %d", keyCode, wantedKeyCode)
+	}
+	if err != nil {
+		t.Errorf("parseKeyCode returns non-nil err %hq", err)
+	}
+}
+
+// Test that parseKeyCode parses an invalid keyCode, with spaces interspersed between the digits, correctly.
+func TestParseKeyCodeInvalidInterspersedSpaces(t *testing.T) {
+	s := "1 2 3 4 5 6 7 8 9"
+	
+	wantedErr := errors.New(fmt.Sprintf("Key code %q is invalid", s))
+
+	_, err := parseKeyCode(s)
+
+	if err == nil {
+		t.Errorf("parseKeyCode returns incorrect err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseKeyCode returns incorrect err %q, want %q", err, wantedErr)
+	}
+}
+
+
+	
