@@ -178,7 +178,7 @@ func TestParseKeyCodeValid(t *testing.T) {
 		t.Errorf("parseKeyCode returns incorrect key code %d, want %d", keyCode, wantedKeyCode)
 	}
 	if err != nil {
-		t.Errorf("parseKeyCode returns non-nil err %hq", err)
+		t.Errorf("parseKeyCode returns non-nil err %q", err)
 	}
 }
 
@@ -197,5 +197,92 @@ func TestParseKeyCodeInvalidInterspersedSpaces(t *testing.T) {
 	}
 }
 
+/*
+ * parseMapping tests
+ */
 
+func areMatchersEqual(left, right Matcher) bool {
+	areLeftComparisonsEqual := areComparisonsEqual(left.LeftComparison, right.LeftComparison)
+	areOperatorsEqual := left.Operator == right.Operator
+	areRightComparisonsEqual := areComparisonsEqual(left.RightComparison, right.RightComparison)
+	return areLeftComparisonsEqual && areOperatorsEqual && areRightComparisonsEqual
+}
+
+// Test that parseMapping parses a valid mapping correctly.
+func TestParseMappingValid(t *testing.T) {
+	s := "data1 == 44 && data2 == 64 -> 1"
+
+	wantedMatcher := Matcher{
+		LeftComparison: Comparison{
+			LeftOperand: Data1,
+			Operator: EqualToOperator,
+			RightOperand: 44,
+		},
+		Operator: LogicalAndOperator,
+		RightComparison: Comparison{
+			LeftOperand: Data2,
+			Operator: EqualToOperator,
+			RightOperand: 64,
+		},
+	}
+	wantedKeyCode := 1
+
+	mapping, err := parseMapping(s)
+
+	if !areMatchersEqual(mapping.Matcher, wantedMatcher) {
+		t.Errorf("parseMapping returns mapping with incorrect matcher %v, want %v", mapping.Matcher, wantedMatcher)
+	}
+	if mapping.KeyCode != wantedKeyCode {
+		t.Errorf("parseMapping returns mapping with incorrect key code %d, want %d", mapping.KeyCode, wantedKeyCode)
+	}
+	if err != nil {
+		t.Errorf("parseMapping returns non-nil error %q", err)
+	}
+}	
 	
+// Test that parseMapping parses an invalid mapping, with an invalid matcher, correctly.
+func TestParseMappingInvalidInvalidMatcher(t *testing.T) {
+	matcher :=  "data1 < 44 data2 == 64"
+	s := matcher + " -> 1"
+
+	wantedErr := errors.New(fmt.Sprintf("Matcher %q does not have a valid logical operator", matcher))
+
+	_, err := parseMapping(s)
+
+	if err == nil {
+		t.Errorf("parseMapping returns err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
+	}
+}	
+
+// Test that parseMapping parses an invalid mapping, with an invalid separator, correctly.
+func TestParseMappingInvalidInvalidSeparator(t *testing.T) {
+	s :=  "data1 < 44 && data2 == 64 - > 12" // interspersing spaces in the separator is not allowed.
+	
+	wantedErr := errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
+
+	_, err := parseMapping(s)
+
+	if err == nil {
+		t.Errorf("parseMapping returns err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
+	}
+}	
+
+// Test that parseMapping parses an invalid mapping, with an invalid keycode, correctly.
+func TestParseMappingInvalidInvalidKeycode(t *testing.T) {
+	keyCode := "1 2"
+	s :=  "data1 < 44 && data2 == 64 -> " + keyCode
+	
+	wantedErr := errors.New(fmt.Sprintf("Key code %q is invalid", keyCode))
+
+	_, err := parseMapping(s)
+
+	if err == nil {
+		t.Errorf("parseMapping returns err nil, want %q", wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
+	}
+}	

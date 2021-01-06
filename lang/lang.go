@@ -156,6 +156,7 @@ func beforeAndAfterLogicalOperator(s string) (string, string, LogicalOperator) {
 // parseMatcher parses a matcher as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
 // If s is a valid matcher as described by the specification, parseMatcher returns matcher, true.
 // Otherwise parseMatcher returns matcher, false.
+// s may not contain any leading or trailing space.
 func parseMatcher(s string) (Matcher, error) {
 	var matcher Matcher
 
@@ -195,26 +196,26 @@ type Mapping struct {
 	KeyCode int
 }
 
-// parseMAPPING parses a MAPPING as specified in Section 1.2 MAPPINGS of the midimap-lang specification.
-// If s is a valid MAPPING as described by the specification, parseMAPPING returns mapping, true.
-// Otherwise parseMAPPING returns mapping, false.
-func parseMAPPING(s string) (Mapping, bool) {
+// parseMapping parses a mapping as specified in Section 1.2 MAPPINGS of the midimap-lang specification.
+// If s is a valid mapping as described by the specification, parseMapping returns mapping, nil.
+// Otherwise parseMapping returns mapping, error.
+func parseMapping(s string) (Mapping, error) {
 	var mapping Mapping
-	r := regexp.MustCompilePOSIX("- *>")
+	r := regexp.MustCompilePOSIX("->")
 	before, after, ok := beforeAndAfter(r, s)
 	if !ok {
-		return mapping, false
+		return mapping, errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
 	}
 	var err error
-	mapping.Matcher, err = parseMatcher(before)
+	mapping.Matcher, err = parseMatcher(strings.TrimSpace(before))
 	if err != nil {
-		return mapping, false
+		return mapping, err
 	}
-	mapping.KeyCode, err = parseKeyCode(after)
+	mapping.KeyCode, err = parseKeyCode(strings.TrimSpace(after))
 	if err != nil {
-		return mapping, false
+		return mapping, err
 	}
-	return mapping, false
+	return mapping, nil
 }
 
 // NextMAPPING attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a MAPPING is reached or an io error occurs.
@@ -238,11 +239,6 @@ func NextMAPPING(r *bufio.Reader) (Mapping, error) {
 
 	// I wonder if there is an idiom to return all the return values of a called function.
 	// It sounds a bit sugarish, so probably not.
-	mapping, ok := parseMAPPING(line)
-	var err error = nil
-	if !ok {
-		err = errors.New(fmt.Sprintf("invalid mapping %q", line))
-	}
-
+	mapping, err := parseMapping(line)
 	return mapping, err
 }
