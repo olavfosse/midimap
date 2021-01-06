@@ -48,23 +48,22 @@ func skipToNonSpaceCharacter(s *string) (ok bool) {
 	}
 	return false
 }
-	
 
 // parseComparison parses a comparison as specified in Section 1.2.1.1 COMPARISONS of the midimap-lang specification.
 // If s is a valid comparison as described by the specification, parseComparison returns comparison, true.
 // Otherwise parseComparison returns comparison, false.
 // s may not contain any leading or trailing space.
-func parseComparison(s string) (Comparison, error) {
+func parseComparison(s string) (comparison Comparison, err error) {
 	unParsed := s // the characters of s which are yet to be parsed
 
-	var comparison Comparison
 	switch {
 	case strings.HasPrefix(unParsed, "data1"):
 		comparison.LeftOperand = Data1
 	case strings.HasPrefix(unParsed, "data2"):
 		comparison.LeftOperand = Data2
 	default:
-		return comparison, fmt.Errorf("Comparison %q does not have a valid left operand", s)
+		err = fmt.Errorf("Comparison %q does not have a valid left operand", s)
+		return
 	}
 	unParsed = unParsed[len("datax"):] // Discard parsed leftOperand
 
@@ -90,18 +89,20 @@ func parseComparison(s string) (Comparison, error) {
 		comparison.Operator = GreaterThanOperator
 		operatorLength = 1
 	default:
-		return comparison, fmt.Errorf("Comparison %q does not have a valid operator", s)
+		err = fmt.Errorf("Comparison %q does not have a valid operator", s)
+		return
 	}
 	unParsed = unParsed[operatorLength:] // Discard parsed operator
 
 	skipToNonSpaceCharacter(&unParsed)
 	n, err := strconv.ParseInt(unParsed, 10, 64)
 	if err != nil {
-		return comparison, fmt.Errorf("Comparison %q does not have a valid right operand", s)
+		err = fmt.Errorf("Comparison %q does not have a valid right operand", s)
+		return
 	}
 	comparison.RightOperand = int64(n)
 	
-	return comparison, nil
+	return
 }
 
 type LogicalOperator int
@@ -199,36 +200,32 @@ type Mapping struct {
 // parseMapping parses a mapping as specified in Section 1.2 MAPPINGS of the midimap-lang specification.
 // If s is a valid mapping as described by the specification, parseMapping returns mapping, nil.
 // Otherwise parseMapping returns mapping, error.
-func parseMapping(s string) (Mapping, error) {
-	var mapping Mapping
+func parseMapping(s string) (mapping Mapping, err error) {
 	r := regexp.MustCompilePOSIX("->")
 	before, after, ok := beforeAndAfter(r, s)
 	if !ok {
-		return mapping, errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
+		err = errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
+		return
 	}
-	var err error
 	mapping.Matcher, err = parseMatcher(strings.TrimSpace(before))
 	if err != nil {
-		return mapping, err
+		return
 	}
 	mapping.KeyCode, err = parseKeyCode(strings.TrimSpace(after))
-	if err != nil {
-		return mapping, err
-	}
-	return mapping, nil
+	return
 }
 
 // NextMapping attemps to parse the next MAPPING, as specified in Section 1.2 MAPPINGS of the midimap-lang specification, from r by parsing lines until a mapping is reached or an io error occurs.
 // If an io error occured NextMapping returns mapping, ioError.
 // If an invalid mapping is reached NextMapping returns mapping, err, where err is an error describing how the mapping is invalid.
 // Otherwise NextMapping returns mapping, nil.
-func NextMapping(r *bufio.Reader) (Mapping, error) {
-	var mapping Mapping
+func NextMapping(r *bufio.Reader) (mapping Mapping, err error) {
 	var line string
 	for {
-		s, err := r.ReadString('\n')
+		var s string
+		s, err = r.ReadString('\n')
 		if err != nil {
-			return mapping, err
+			return
 		}
 		line = s[:len(s)-1]
 		// skip comments
@@ -239,6 +236,6 @@ func NextMapping(r *bufio.Reader) (Mapping, error) {
 
 	// I wonder if there is an idiom to return all the return values of a called function.
 	// It sounds a bit sugarish, so probably not.
-	mapping, err := parseMapping(line)
-	return mapping, err
+	mapping, err = parseMapping(line)
+	return 
 }
