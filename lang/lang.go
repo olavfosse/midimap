@@ -36,55 +36,72 @@ type Comparison struct {
 	RightOperand int64
 }
 
-// parseCOMPARISON parses a COMPARISON as specified in Section 1.2.1.1 COMPARISONS of the midimap-lang specification.
-// If s is a valid COMPARISON as described by the specification, parseCOMPARISON returns comparison, true.
-// Otherwise parseCOMPARISON returns comparison, false.
-func parseCOMPARISON(s string) (Comparison, bool) {
-	s = strings.ReplaceAll(s, " ", "") // Remove spaces
+// skipToNonSpaceCharacter moves the start of *s to the next non-space character.
+// If there is a non-space character in *s, *s is modified such that the first character in *s is that non-space character, and true is returned.
+// Otherwise *s is not modified and false is returned.
+func skipToNonSpaceCharacter(s *string) (ok bool) {
+	for i, c := range *s {
+		if c != ' ' {
+			*s = (*s)[i:]
+			return true
+		}
+	}
+	return false
+}
+	
 
+// parseComparison parses a comparison as specified in Section 1.2.1.1 COMPARISONS of the midimap-lang specification.
+// If s is a valid comparison as described by the specification, parseComparison returns comparison, true.
+// Otherwise parseComparison returns comparison, false.
+func parseComparison(s string) (Comparison, error) {
+	unParsed := s // the characters of s which are yet to be parsed
+
+	skipToNonSpaceCharacter(&unParsed)
 	var comparison Comparison
 	switch {
-	case strings.HasPrefix(s, "data1"):
+	case strings.HasPrefix(unParsed, "data1"):
 		comparison.LeftOperand = Data1
-	case strings.HasPrefix(s, "data2"):
+	case strings.HasPrefix(unParsed, "data2"):
 		comparison.LeftOperand = Data2
 	default:
-		return comparison, false
+		return comparison, fmt.Errorf("Comparison %q does not have a valid left operand", s)
 	}
-	s = s[len("datax"):] // Discard parsed leftOperand
+	unParsed = unParsed[len("datax"):] // Discard parsed leftOperand
 
+	skipToNonSpaceCharacter(&unParsed)
 	var operatorLength int
 	switch {
-	case strings.HasPrefix(s, "=="):
+	case strings.HasPrefix(unParsed, "=="):
 		comparison.Operator = EqualToOperator
 		operatorLength = 2
-	case strings.HasPrefix(s, "!="):
+	case strings.HasPrefix(unParsed, "!="):
 		comparison.Operator = UnequalToOperator
 		operatorLength = 2
-	case strings.HasPrefix(s, "<="):
+	case strings.HasPrefix(unParsed, "<="):
 		comparison.Operator = LessThanOrEqualToOperator
 		operatorLength = 2
-	case strings.HasPrefix(s, ">="):
+	case strings.HasPrefix(unParsed, ">="):
 		comparison.Operator = GreaterThanOrEqualToOperator
 		operatorLength = 2
-	case strings.HasPrefix(s, "<"):
+	case strings.HasPrefix(unParsed, "<"):
 		comparison.Operator = LessThanOperator
 		operatorLength = 1
-	case strings.HasPrefix(s, ">"):
+	case strings.HasPrefix(unParsed, ">"):
 		comparison.Operator = GreaterThanOperator
 		operatorLength = 1
 	default:
-		return comparison, false
+		return comparison, fmt.Errorf("Comparison %q does not have a valid operator", s)
 	}
-	s = s[operatorLength:] // Discard parsed operator
+	unParsed = unParsed[operatorLength:] // Discard parsed operator
 
-	n, err := strconv.ParseInt(s, 10, 64)
+	skipToNonSpaceCharacter(&unParsed)
+	n, err := strconv.ParseInt(unParsed, 10, 64)
 	if err != nil {
-		return comparison, false
+		return comparison, fmt.Errorf("Comparison %q does not have a valid right operand", s)
 	}
 	comparison.RightOperand = int64(n)
-
-	return comparison, true
+	
+	return comparison, nil
 }
 
 type LogicalOperator int
@@ -148,13 +165,13 @@ func parseMATCHER(s string) (Matcher, bool) {
 		return matcher, false
 	}
 
-	var ok bool
-	matcher.LeftComparison, ok = parseCOMPARISON(left)
-	if !ok {
+	var err error
+	matcher.LeftComparison, err = parseComparison(left)
+	if err != nil {
 		return matcher, false
 	}
-	matcher.RightComparison, ok = parseCOMPARISON(right)
-	if !ok {
+	matcher.RightComparison, err = parseComparison(right)
+	if err != nil {
 		return matcher, false
 	}
 
