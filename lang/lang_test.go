@@ -1,9 +1,9 @@
 package lang
 
 import (
-	"testing"
 	"errors"
 	"fmt"
+	"testing"
 )
 
 /*
@@ -15,7 +15,7 @@ func TestParseComparisonValid(t *testing.T) {
 	wantedLeftOperand := Data1
 	wantedOperator := GreaterThanOperator
 	var wantedRightOperand int64 = 123
-	
+
 	s := "data1 > 123"
 	comparison, err := parseComparison(s)
 
@@ -38,9 +38,9 @@ func TestParseComparisonInvalidNoLeftOperand(t *testing.T) {
 	s := " > 123"
 
 	var wantedErr error = errors.New(fmt.Sprintf("Comparison %q does not have a valid left operand", s))
-	
+
 	_, err := parseComparison(s)
-	
+
 	if err == nil {
 		t.Errorf("parseComparison returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
@@ -53,9 +53,9 @@ func TestParseComparisonInvalidNoOperator(t *testing.T) {
 	s := "data1 123"
 
 	var wantedErr error = errors.New(fmt.Sprintf("Comparison %q does not have a valid operator", s))
-	
+
 	_, err := parseComparison(s)
-	
+
 	if err == nil {
 		t.Errorf("parseComparison returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
@@ -68,9 +68,9 @@ func TestParseComparisonInvalidNoRightOperand(t *testing.T) {
 	s := "data1 >"
 
 	var wantedErr error = errors.New(fmt.Sprintf("Comparison %q does not have a valid right operand", s))
-	
+
 	_, err := parseComparison(s)
-	
+
 	if err == nil {
 		t.Errorf("parseComparison returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
@@ -99,7 +99,7 @@ func TestParseMatcherValid(t *testing.T) {
 		Operator:     UnequalToOperator,
 		RightOperand: 365,
 	}
-	
+
 	s := "data1 == 557 && data2 != 365"
 	matcher, err := parseMatcher(s)
 
@@ -121,7 +121,7 @@ func TestParseMatcherValid(t *testing.T) {
 func TestParseMatcherInvalidInvalidLeftComparison(t *testing.T) {
 	leftComparison := "data1 557"
 	wantedErr := errors.New(fmt.Sprintf("Comparison %q does not have a valid operator", leftComparison))
-	
+
 	s := leftComparison + " && data2 != 365"
 	_, err := parseMatcher(s)
 
@@ -151,8 +151,8 @@ func TestParseMatcherInvalidNoLogicalOperator(t *testing.T) {
 func TestParseMatcherInvalidInvalidRightComparison(t *testing.T) {
 	rightComparison := "data1 557"
 	wantedErr := errors.New(fmt.Sprintf("Comparison %q does not have a valid operator", rightComparison))
-	
-	s :=  "data2 != 365 && " + rightComparison
+
+	s := "data2 != 365 && " + rightComparison
 	_, err := parseMatcher(s)
 
 	if err == nil {
@@ -168,10 +168,10 @@ func TestParseMatcherInvalidInvalidRightComparison(t *testing.T) {
 
 // Test that parseKeyCode parses a valid key code correctly.
 func TestParseKeyCodeValid(t *testing.T) {
-	wantedKeyCode :=1
-	
+	wantedKeyCode := 1
+
 	s := "1" // ESC
-	
+
 	keyCode, err := parseKeyCode(s)
 
 	if keyCode != wantedKeyCode {
@@ -185,7 +185,7 @@ func TestParseKeyCodeValid(t *testing.T) {
 // Test that parseKeyCode parses an invalid keyCode, with spaces interspersed between the digits, correctly.
 func TestParseKeyCodeInvalidInterspersedSpaces(t *testing.T) {
 	s := "1 2 3 4 5 6 7 8 9"
-	
+
 	wantedErr := errors.New(fmt.Sprintf("Key code %q is invalid", s))
 
 	_, err := parseKeyCode(s)
@@ -214,14 +214,14 @@ func TestParseMappingValid(t *testing.T) {
 
 	wantedMatcher := Matcher{
 		LeftComparison: Comparison{
-			LeftOperand: Data1,
-			Operator: EqualToOperator,
+			LeftOperand:  Data1,
+			Operator:     EqualToOperator,
 			RightOperand: 44,
 		},
 		Operator: LogicalAndOperator,
 		RightComparison: Comparison{
-			LeftOperand: Data2,
-			Operator: EqualToOperator,
+			LeftOperand:  Data2,
+			Operator:     EqualToOperator,
 			RightOperand: 64,
 		},
 	}
@@ -238,11 +238,11 @@ func TestParseMappingValid(t *testing.T) {
 	if err != nil {
 		t.Errorf("parseMapping returns non-nil error %q", err)
 	}
-}	
-	
+}
+
 // Test that parseMapping parses an invalid mapping, with an invalid matcher, correctly.
 func TestParseMappingInvalidInvalidMatcher(t *testing.T) {
-	matcher :=  "data1 < 44 data2 == 64"
+	matcher := "data1 < 44 data2 == 64"
 	s := matcher + " -> 1"
 
 	wantedErr := errors.New(fmt.Sprintf("Matcher %q does not have a valid logical operator", matcher))
@@ -254,12 +254,12 @@ func TestParseMappingInvalidInvalidMatcher(t *testing.T) {
 	} else if err.Error() != wantedErr.Error() {
 		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
 	}
-}	
+}
 
 // Test that parseMapping parses an invalid mapping, with an invalid separator, correctly.
 func TestParseMappingInvalidInvalidSeparator(t *testing.T) {
-	s :=  "data1 < 44 && data2 == 64 - > 12" // interspersing spaces in the separator is not allowed.
-	
+	s := "data1 < 44 && data2 == 64 - > 12" // interspersing spaces in the separator is not allowed.
+
 	wantedErr := errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
 
 	_, err := parseMapping(s)
@@ -269,13 +269,13 @@ func TestParseMappingInvalidInvalidSeparator(t *testing.T) {
 	} else if err.Error() != wantedErr.Error() {
 		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
 	}
-}	
+}
 
 // Test that parseMapping parses an invalid mapping, with an invalid keycode, correctly.
 func TestParseMappingInvalidInvalidKeycode(t *testing.T) {
 	keyCode := "1 2"
-	s :=  "data1 < 44 && data2 == 64 -> " + keyCode
-	
+	s := "data1 < 44 && data2 == 64 -> " + keyCode
+
 	wantedErr := errors.New(fmt.Sprintf("Key code %q is invalid", keyCode))
 
 	_, err := parseMapping(s)
@@ -285,4 +285,4 @@ func TestParseMappingInvalidInvalidKeycode(t *testing.T) {
 	} else if err.Error() != wantedErr.Error() {
 		t.Errorf("parseMapping returns incorrect err %q, want %q", err, wantedErr)
 	}
-}	
+}

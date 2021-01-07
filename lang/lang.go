@@ -101,7 +101,7 @@ func parseComparison(s string) (comparison Comparison, err error) {
 		return
 	}
 	comparison.RightOperand = int64(n)
-	
+
 	return
 }
 
@@ -237,5 +237,5 @@ func NextMapping(r *bufio.Reader) (mapping Mapping, err error) {
 	// I wonder if there is an idiom to return all the return values of a called function.
 	// It sounds a bit sugarish, so probably not.
 	mapping, err = parseMapping(line)
-	return 
+	return
 }
