@@ -24,7 +24,7 @@ The form of a COMPARISON is "LEFTOPERAND OPERATOR RIGHTOPERAND".
 
 LEFTOPERAND is "data1" or "data2".
 
-OPERATOR is <, <=, ==, !=, >= or >.
+OPERATOR is one of "<", "<=", "==", "!=", ">=" or ">" representing a comparison operator.
 
 RIGHTOPERAND is an integer represented by a series of decimal digits.
 #### 1.2.2 KEYCODES
