@@ -48,7 +48,7 @@ This is also a bug, that will be fixed eventually. Despite these bugs the progra
 ### midimap-lang
 midimap-lang is a domain specific programming language created specifically for midimap. It consists of a series of mappings and comments. A mapping consists of a key code and a conditon, called its matcher. When midimap receives an incoming MIDI event it simulates pressing the key code of every mapping which has a matcher that matches the incoming event.
 
-For learning how to write midimap-lang maps, see the specification midimap-lang-spec.md and the example maps in maps/. At the moment there is no tutorial, but reading through these which should not take very long, should be sufficient to read and write any midimap map.
+For learning how to write midimap-lang maps, see the specification [midimap-lang-spec.md](https://github.com/fossegrim/midimap/blob/master/midimap-lang-spec.md) and the example maps in [maps/](https://github.com/fossegrim/midimap/tree/master/maps). At the moment there is no tutorial, but reading through these should be sufficient to read and write any midimap map.
 
 ## Alternatives
 | Alternative                                                                         | License                              | Platform     | Comment          |
