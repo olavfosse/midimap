@@ -35,5 +35,6 @@
 # |-----------+----------------------------------------------------------------|
 #
 # Map bottom, that is the events belonging to the bottom category described
-# above, to ESC.
-data1 == 44 && data2 == 64 -> 1
+# above, to F7. In my GNU Emacs configuration that is bound to a special map
+# called olav-pedal-map, where I have bound many useful commands.
+data1 == 44 && data2 == 64 -> 65
