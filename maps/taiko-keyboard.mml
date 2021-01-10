@@ -1,0 +1,26 @@
+#!/usr/bin/env midimap
+# This map is used for playing Taiko no Tatsujin-like games with the PSR-E333
+# keyboard.
+#
+# The events emitted from this keyboard use data1 to identify the key and data2
+# to specify the amount of force used or the type of event.
+#
+# The leftmost key has a data1 of 36 and the rightmost key has a data1 of 96.
+# Stepping one key to the left lands you at a key with one smaller data1.
+# Stepping to the right lands you at a key with one higher data1.
+#
+# If data2 is 1 or above the event denotes a keypress, the higher the data2 the
+# more force is applied to the keypress. If data2 is equal to 0 the event
+# denotes a key release.
+#
+# My Taiko no Tatsujin-like game interprets e as left ka, i as right ka, f as
+# left don and j as right don.
+#
+# Map the leftmost key to e
+data1 == 50 && data2 != 0 -> 14
+# Map the rightmost key to i
+data1 == 74 && data2 != 0 -> 34
+# Map the second-leftmost key to f
+data1 == 52 && data2 != 0 -> 3
+# Map the second-rightmost key to j
+data1 == 72 && data2 != 0 -> 38
