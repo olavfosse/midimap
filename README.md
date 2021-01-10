@@ -5,16 +5,16 @@ This program is of pre-release status, but it is public either way. Also since t
 # midimap
 Map MIDI events to simulated keyboard events.
 ## Setup
-### Install portmidi
+### Install rtmidi dependencies
 ```sh
 # Debian derivatives
-sudo apt install libportmidi-dev
+sudo apt install libasound2-dev
 # MacOS
-brew install portmidi
+# TODO: Add possible macos rtmidi dependencios
 ```
-### Install go packages
+### Install Go dependencies
 ```sh
-go get github.com/micmonay/keybd_event github.com/rakyll/portmidi
+go get github.com/micmonay/keybd_event gitlab.com/gomidi/midi gitlab.com/gomidi/midi/reader gitlab.com/gomidi/rtmididrv
 ```
 ### Compile midimap
 ```sh
