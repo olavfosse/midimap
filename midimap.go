@@ -72,7 +72,7 @@ func log(portNumber uint64) error {
 
 	in, ok := getInByPortNumber(ins, portNumber)
 	if !ok {
-		return errors.New(fmt.Sprintf("error: no MIDI port by number %d", portNumber))
+		return fmt.Errorf("error: no MIDI port by number %d", portNumber)
 	}
 	err = in.Open()
 	if err != nil {
