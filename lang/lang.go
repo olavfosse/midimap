@@ -5,7 +5,6 @@ package lang
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -164,7 +163,7 @@ func parseMatcher(s string) (Matcher, error) {
 	var left, right string
 	left, right, matcher.Operator = beforeAndAfterLogicalOperator(s)
 	if matcher.Operator == NoLogicalOperator {
-		return matcher, errors.New(fmt.Sprintf("Matcher %q does not have a valid logical operator", s))
+		return matcher, fmt.Errorf("Matcher %q does not have a valid logical operator", s)
 	}
 
 	var err error
@@ -187,7 +186,7 @@ func parseMatcher(s string) (Matcher, error) {
 func parseKeyCode(s string) (int, error) {
 	keyCode, err := strconv.Atoi(s)
 	if err != nil {
-		return keyCode, errors.New(fmt.Sprintf("Key code %q is invalid", s))
+		return keyCode, fmt.Errorf("Key code %q is invalid", s)
 	}
 	return keyCode, nil
 }
@@ -204,7 +203,7 @@ func parseMapping(s string) (mapping Mapping, err error) {
 	r := regexp.MustCompilePOSIX("->")
 	before, after, ok := beforeAndAfter(r, s)
 	if !ok {
-		err = errors.New(fmt.Sprintf("Mapping %q does not have a valid separator", s))
+		err = fmt.Errorf("Mapping %q does not have a valid separator", s)
 		return
 	}
 	mapping.Matcher, err = parseMatcher(strings.TrimSpace(before))
