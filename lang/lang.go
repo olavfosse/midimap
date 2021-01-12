@@ -61,7 +61,7 @@ func parseComparison(s string) (comparison Comparison, err error) {
 	case strings.HasPrefix(unParsed, "data2"):
 		comparison.LeftOperand = Data2
 	default:
-		err = fmt.Errorf("Comparison %q does not have a valid left operand", s)
+		err = fmt.Errorf("comparison %q: no valid left operand", s)
 		return
 	}
 	unParsed = unParsed[len("datax"):] // Discard parsed leftOperand
@@ -88,7 +88,7 @@ func parseComparison(s string) (comparison Comparison, err error) {
 		comparison.Operator = GreaterThanOperator
 		operatorLength = 1
 	default:
-		err = fmt.Errorf("Comparison %q does not have a valid operator", s)
+		err = fmt.Errorf("comparison %q: no valid operator", s)
 		return
 	}
 	unParsed = unParsed[operatorLength:] // Discard parsed operator
@@ -96,7 +96,7 @@ func parseComparison(s string) (comparison Comparison, err error) {
 	skipToNonSpaceCharacter(&unParsed)
 	n, err := strconv.ParseInt(unParsed, 10, 64)
 	if err != nil {
-		err = fmt.Errorf("Comparison %q does not have a valid right operand", s)
+		err = fmt.Errorf("comparison %q: no valid right operand", s)
 		return
 	}
 	comparison.RightOperand = int64(n)
@@ -163,7 +163,7 @@ func ParseMatcher(s string) (Matcher, error) {
 	var left, right string
 	left, right, matcher.Operator = beforeAndAfterLogicalOperator(s)
 	if matcher.Operator == NoLogicalOperator {
-		return matcher, fmt.Errorf("Matcher %q does not have a valid logical operator", s)
+		return matcher, fmt.Errorf("matcher %q: no valid logical operator", s)
 	}
 
 	var err error
@@ -186,7 +186,7 @@ func ParseMatcher(s string) (Matcher, error) {
 func parseKeyCode(s string) (int, error) {
 	keyCode, err := strconv.Atoi(s)
 	if err != nil {
-		return keyCode, fmt.Errorf("Key code %q is invalid", s)
+		return keyCode, fmt.Errorf("key code %q: invalid", s)
 	}
 	return keyCode, nil
 }
@@ -203,7 +203,7 @@ func parseMapping(s string) (mapping Mapping, err error) {
 	r := regexp.MustCompilePOSIX("->")
 	before, after, ok := beforeAndAfter(r, s)
 	if !ok {
-		err = fmt.Errorf("Mapping %q does not have a valid separator", s)
+		err = fmt.Errorf("mapping %q: no valid separator", s)
 		return
 	}
 	mapping.Matcher, err = ParseMatcher(strings.TrimSpace(before))

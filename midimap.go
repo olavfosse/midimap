@@ -219,7 +219,7 @@ func getMappingsFromMapName(mapName string) (mappings []lang.Mapping, err error)
 			break
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
+			fmt.Fprintf(os.Stderr, "lang: %v\n", err)
 		}
 		mappings = append(mappings, mapping)
 	}
