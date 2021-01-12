@@ -13,8 +13,8 @@ import (
 	"github.com/micmonay/keybd_event"
 	"gitlab.com/gomidi/midi"
 	"gitlab.com/gomidi/midi/reader"
-	"gitlab.com/gomidi/rtmididrv"
 
+	"./driver"
 	"./lang"
 )
 
@@ -70,7 +70,7 @@ func parsePortNumber(s string) (portNumber uint64, err error) {
 
 // dispatchPorts outputs a list of the available MIDI devices/ports.
 func dispatchPorts() error {
-	drv, err := rtmididrv.New()
+	drv, err := driver.New()
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func dispatchPorts() error {
 
 // dispatchLog logs incoming MIDI events from the port with the number portNumber.
 func dispatchLog(portNumber uint64, receivedMatcher bool, matcher lang.Matcher) error {
-	drv, err := rtmididrv.New()
+	drv, err := driver.New()
 	if err != nil {
 		return err
 	}
@@ -139,7 +139,7 @@ func dispatchMap(portNumber uint64, mapName string) error {
 		return err
 	}
 
-	drv, err := rtmididrv.New()
+	drv, err := driver.New()
 	if err != nil {
 		return err
 	}

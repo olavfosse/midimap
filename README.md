@@ -5,20 +5,39 @@ This program is of pre-release status, but it is public either way. Also since t
 # midimap
 Map MIDI events to simulated keyboard events.
 ## Setup
-### Install rtmidi dependencies
+midimap can be compiled to use either portmidi or rtmidi. The following sections describe how to build midimap with one of these libraries, you should only follow the section for your library of choice.
+
+If you are confused with regards to which library to use, I recommend rtmidi for most users.
+### rtmidi
+#### Install non-Go dependencies
 ```sh
 # Debian derivatives
 sudo apt install libasound2-dev
 # MacOS
 # TODO: Add possible macos rtmidi dependencios
 ```
-### Install Go dependencies
+#### Install Go dependencies
 ```sh
 go get github.com/micmonay/keybd_event gitlab.com/gomidi/midi gitlab.com/gomidi/midi/reader gitlab.com/gomidi/rtmididrv
 ```
-### Compile midimap
+#### Compile
 ```sh
-$ go build
+$ go build -tags rtmidi
+```
+### portmidi
+#### Install non-Go dependencies
+```sh
+# Debian derivatives
+sudo apt install libportmidi-dev
+# MacOS
+brew install portmidi
+```
+#### Install Go dependencies
+go get github.com/micmonay/keybd_event gitlab.com/gomidi/midi gitlab.com/gomidi/midi/reader gitlab.com/gomidi/portmididrv
+```
+#### Compile
+```sh
+$ go build -tags portmidi
 ```
 ## Usage
 midimap is invoked on the command line along with one argument `map`, a path to a "midimap-lang" file which describes which MIDI events to map to which simulated keypresses. The "midimap-lang" section explains midimap-lang in more depth.
