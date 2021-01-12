@@ -78,14 +78,14 @@ func TestParseComparisonInvalidNoRightOperand(t *testing.T) {
 }
 
 /*
- * parseMatcher tests
+ * ParseMatcher tests
  */
 
 func areComparisonsEqual(left, right Comparison) bool {
 	return left.LeftOperand == right.LeftOperand && left.Operator == right.Operator && left.RightOperand == right.RightOperand
 }
 
-// Test that parseMatcher parses a valid matcher correctly.
+// Test that ParseMatcher parses a valid matcher correctly.
 func TestParseMatcherValid(t *testing.T) {
 	wantedLeftComparison := Comparison{
 		LeftOperand:  Data1,
@@ -100,64 +100,64 @@ func TestParseMatcherValid(t *testing.T) {
 	}
 
 	s := "data1 == 557 && data2 != 365"
-	matcher, err := parseMatcher(s)
+	matcher, err := ParseMatcher(s)
 
 	if !areComparisonsEqual(matcher.LeftComparison, wantedLeftComparison) {
-		t.Errorf("parseMatcher returns a matcher with an incorrect LeftComparison %v, want %v", matcher.LeftComparison, wantedLeftComparison)
+		t.Errorf("ParseMatcher returns a matcher with an incorrect LeftComparison %v, want %v", matcher.LeftComparison, wantedLeftComparison)
 	}
 	if matcher.Operator != wantedOperator {
-		t.Errorf("parseMatcher returns a matcher with an incorrect Operator %d, want %d", matcher.Operator, wantedOperator)
+		t.Errorf("ParseMatcher returns a matcher with an incorrect Operator %d, want %d", matcher.Operator, wantedOperator)
 	}
 	if !areComparisonsEqual(matcher.RightComparison, wantedRightComparison) {
-		t.Errorf("parseMatcher returns a matcher with an incorrect RightComparison %v, want %v", matcher.RightComparison, wantedRightComparison)
+		t.Errorf("ParseMatcher returns a matcher with an incorrect RightComparison %v, want %v", matcher.RightComparison, wantedRightComparison)
 	}
 	if err != nil {
-		t.Errorf("parseMatcher returns non-nil err %q", err)
+		t.Errorf("ParseMatcher returns non-nil err %q", err)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, with an invalid left comparison, correctly.
+// Test that ParseMatcher parses an invalid matcher, with an invalid left comparison, correctly.
 func TestParseMatcherInvalidInvalidLeftComparison(t *testing.T) {
 	leftComparison := "data1 557"
 	wantedErr := fmt.Errorf("Comparison %q does not have a valid operator", leftComparison)
 
 	s := leftComparison + " && data2 != 365"
-	_, err := parseMatcher(s)
+	_, err := ParseMatcher(s)
 
 	if err == nil {
-		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
-		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err %q, want %q", err, wantedErr)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, lacking a logical operator, correctly.
+// Test that ParseMatcher parses an invalid matcher, lacking a logical operator, correctly.
 func TestParseMatcherInvalidNoLogicalOperator(t *testing.T) {
 	s := "data1 557 & & data2 != 365"
 
 	wantedErr := fmt.Errorf("Matcher %q does not have a valid logical operator", s)
 
-	_, err := parseMatcher(s)
+	_, err := ParseMatcher(s)
 
 	if err == nil {
-		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
-		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err %q, want %q", err, wantedErr)
 	}
 }
 
-// Test that parseMatcher parses an invalid matcher, with an invalid right comparison, correctly.
+// Test that ParseMatcher parses an invalid matcher, with an invalid right comparison, correctly.
 func TestParseMatcherInvalidInvalidRightComparison(t *testing.T) {
 	rightComparison := "data1 557"
 	wantedErr := fmt.Errorf("Comparison %q does not have a valid operator", rightComparison)
 
 	s := "data2 != 365 && " + rightComparison
-	_, err := parseMatcher(s)
+	_, err := ParseMatcher(s)
 
 	if err == nil {
-		t.Errorf("parseMatcher returns incorrect err nil, want %q", wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err nil, want %q", wantedErr)
 	} else if err.Error() != wantedErr.Error() {
-		t.Errorf("parseMatcher returns incorrect err %q, want %q", err, wantedErr)
+		t.Errorf("ParseMatcher returns incorrect err %q, want %q", err, wantedErr)
 	}
 }
 

@@ -153,11 +153,11 @@ func beforeAndAfterLogicalOperator(s string) (string, string, LogicalOperator) {
 	return "", "", NoLogicalOperator
 }
 
-// parseMatcher parses a matcher as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
-// If s is a valid matcher as described by the specification, parseMatcher returns matcher, true.
-// Otherwise parseMatcher returns matcher, false.
+// ParseMatcher parses a matcher as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.
+// If s is a valid matcher as described by the specification, ParseMatcher returns matcher, true.
+// Otherwise ParseMatcher returns matcher, false.
 // s may not contain any leading or trailing space.
-func parseMatcher(s string) (Matcher, error) {
+func ParseMatcher(s string) (Matcher, error) {
 	var matcher Matcher
 
 	var left, right string
@@ -206,7 +206,7 @@ func parseMapping(s string) (mapping Mapping, err error) {
 		err = fmt.Errorf("Mapping %q does not have a valid separator", s)
 		return
 	}
-	mapping.Matcher, err = parseMatcher(strings.TrimSpace(before))
+	mapping.Matcher, err = ParseMatcher(strings.TrimSpace(before))
 	if err != nil {
 		return
 	}

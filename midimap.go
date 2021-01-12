@@ -33,12 +33,22 @@ func dispatch(args []string) error {
 	switch {
 	case len(args) == 2 && args[1] == "ports":
 		return dispatchPorts()
-	case len(args) == 3 && args[1] == "log":
+	case (len(args) == 3 || len(args) == 4) && args[1] == "log":
 		portNumber, err := parsePortNumber(args[2])
 		if err != nil {
 			return err
 		}
-		return dispatchLog(portNumber)
+
+		var matcher lang.Matcher
+		receivedMatcher := false
+		if len(args) == 4 {
+			matcher, err = lang.ParseMatcher(args[3])
+			if err != nil {
+				return err
+			}
+			receivedMatcher = true
+		}
+		return dispatchLog(portNumber, receivedMatcher, matcher)
 	case len(args) == 4 && args[1] == "map":
 		portNumber, err := parsePortNumber(args[2])
 		if err != nil {
@@ -46,7 +56,7 @@ func dispatch(args []string) error {
 		}
 		return dispatchMap(portNumber, args[3])
 	default:
-		return errors.New("usage:\tmidimap map portnumber mapname\n\tmidimap ports\n\tmidimap log portnumber")
+		return errors.New("usage:\tmidimap map portnumber mapname\n\tmidimap ports\n\tmidimap log portnumber [matcher]")
 	}
 }
 
@@ -76,7 +86,7 @@ func dispatchPorts() error {
 }
 
 // dispatchLog logs incoming MIDI events from the port with the number portNumber.
-func dispatchLog(portNumber uint64) error {
+func dispatchLog(portNumber uint64, receivedMatcher bool, matcher lang.Matcher) error {
 	drv, err := rtmididrv.New()
 	if err != nil {
 		return err
@@ -102,11 +112,13 @@ func dispatchLog(portNumber uint64) error {
 	rd := reader.New(
 		reader.NoLogger(),
 		reader.Each(func(pos *reader.Position, msg midi.Message) {
-			fmt.Println("---===---")
-			fmt.Printf("%s\n", msg)
-			fmt.Printf("status: %d\n", msg.Raw()[0])
-			fmt.Printf("data1: %d\n", msg.Raw()[1])
-			fmt.Printf("data2: %d\n", msg.Raw()[2])
+			if !receivedMatcher || doesMatcherMatchMessage(matcher, msg) {
+				fmt.Println("---===---")
+				fmt.Printf("%s\n", msg)
+				fmt.Printf("status: %d\n", msg.Raw()[0])
+				fmt.Printf("data1: %d\n", msg.Raw()[1])
+				fmt.Printf("data2: %d\n", msg.Raw()[2])
+			}
 		}),
 	)
 	err = rd.ListenTo(in)
