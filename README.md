@@ -70,7 +70,7 @@ midimap-lang is a domain specific programming language created specifically for 
 For learning how to write midimap-lang maps, see the specification [midimap-lang-spec.md](https://github.com/fossegrim/midimap/blob/master/midimap-lang-spec.md) and the example maps in [maps/](https://github.com/fossegrim/midimap/tree/master/maps). At the moment there is no tutorial, but reading through these should be sufficient to read and write any midimap map.
 
 ## Alternatives
-There are several other MIDI to keypress programs, but none of them are sufficient for my use case. Notably there is no single alternative which is both open source, cross platform and built with a fast stack. I also have ambitions outside of these critera, but for now these are the main advantages.
+There are several other MIDI to keypress programs, but none of them are sufficient for my use case. Notably there is no single alternative which is both open source, cross platform and built with a efficient and pleasant stack(e.g no python or electron ;)). I also have ambitions outside of these critera, but for now these are the main advantages.
 
 | Alternative                                                                         | License                              | Platform     | Comment          |
 |-------------------------------------------------------------------------------------|--------------------------------------|--------------|------------------|
