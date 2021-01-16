@@ -1,4 +1,4 @@
-This program is of pre-release status, but it is public either way. Also since this is my first Go program, don't expect the code to be very idiomatic; advice and suggestions is always appreciated :-).
+This program is of pre-release status, but it is public either way. Also since this is my first Go program, don't expect the code to be very idiomatic; advice and suggestions are always appreciated :-).
 
 ---
 
