@@ -8,7 +8,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/micmonay/keybd_event"
 	"gitlab.com/gomidi/midi"
@@ -121,16 +120,19 @@ func dispatchLog(portNumber uint64, receivedMatcher bool, matcher lang.Matcher) 
 			}
 		}),
 	)
-	err = rd.ListenTo(in)
-	if err != nil {
-		return err
+
+	// I don't understand how and why this snippet works, but it does.
+	// I asked for an explanation in https://github.com/vipul-sharma20/midi-macro/issues/1.
+	exit := make(chan string)
+
+	go rd.ListenTo(in)
+
+	for {
+		select {
+		case <-exit:
+			return nil
+		}
 	}
-
-	// HACK: I couldn't figure out the proper way to read until failure, so I just leave it running for an hour. Should be replaced with waiting until the the device is disconnected or something goes wrong
-	d, _ := time.ParseDuration("1h")
-	time.Sleep(d)
-
-	return err
 }
 
 func dispatchMap(portNumber uint64, mapName string) error {
@@ -180,16 +182,19 @@ func dispatchMap(portNumber uint64, mapName string) error {
 			}
 		}),
 	)
-	err = rd.ListenTo(in)
-	if err != nil {
-		return err
+
+	// I don't understand how and why this snippet works, but it does.
+	// I asked for an explanation in https://github.com/vipul-sharma20/midi-macro/issues/1.
+	exit := make(chan string)
+
+	go rd.ListenTo(in)
+
+	for {
+		select {
+		case <-exit:
+			return nil
+		}
 	}
-
-	// HACK: I couldn't figure out the proper way to read until failure, so I just leave it running for an hour. Should be replaced with waiting until the the device is disconnected or something goes wrong
-	d, _ := time.ParseDuration("1h")
-	time.Sleep(d)
-
-	return err
 }
 
 func press(kb keybd_event.KeyBonding, k int) (err error) {
