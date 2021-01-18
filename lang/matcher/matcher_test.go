@@ -1,6 +1,9 @@
 package matcher
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func areMatchersEqual(left, right Matcher) bool {
 	switch l := left.(type) {
@@ -48,5 +51,21 @@ func TestParse(t *testing.T) {
 
 	if !areMatchersEqual(matcher, wantedMatcher) {
 		t.Errorf("Parse(%q) returns an incorrect matcher %v, want %v.", s, matcher, wantedMatcher)
+	}
+}
+
+// Test that Parse parses a matcher, with an invalid left matcher, correctly.
+func TestParseInvalidLeftMatcher(t *testing.T) {
+	leftMatcher := "data1 557"
+	wantedErr := fmt.Errorf("matcher %q: no valid comparison operator", leftMatcher)
+
+	s := leftMatcher + " && data2 != 365"
+	_, err := Parse(s)
+
+	if err == nil {
+		t.Errorf("Parse(%q) returns an incorrect error %v, want %q.", s, err, wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("Parse(%q) returns incorrect error %q, want %q.", s, err, wantedErr)
+		t.Errorf("Parse(%q) returns an incorrect error %q, want %q.", s, err, wantedErr)
 	}
 }
