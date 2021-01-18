@@ -89,3 +89,57 @@ func TestParseWithoutLogicalOperator(t *testing.T) {
 		t.Errorf("Parse(%q) returns an incorrect matcher %v, want %v.", s, matcher, wantedMatcher)
 	}
 }
+
+// Test that Parse parses a complex, deeply nested, matcher correctly.
+// Important, this test verifies that the logical operators have correct precedence, that is && must have higher precedence than ||.
+func TestParseComplex(t *testing.T) {
+	var wantedErr error = nil
+	wantedMatcher := MatcherWithLogicalOperator{ // data1 == 557 || data1 != 73 && data2 > 20 || data1 < 30 && data2 != 15
+		LeftMatcher: MatcherWithLogicalOperator{ // data1 == 557 || data1 != 73
+			LeftMatcher: MatcherWithoutLogicalOperator{ // data1 == 557
+				LeftOperand:  Data1,
+				Operator:     EqualToOperator,
+				RightOperand: 557,
+			},
+			Operator: LogicalOrOperator,
+			RightMatcher: MatcherWithoutLogicalOperator{ // data1 != 73
+				LeftOperand:  Data1,
+				Operator:     UnequalToOperator,
+				RightOperand: 73,
+			},
+		},
+		Operator: LogicalAndOperator,
+		RightMatcher: MatcherWithLogicalOperator{ // data2 > 20 || data1 < 30 && data2 != 15
+			LeftMatcher: MatcherWithLogicalOperator{ // data2 > 20 || data1 < 30
+				LeftMatcher: MatcherWithoutLogicalOperator{ // data2 > 20
+					LeftOperand:  Data2,
+					Operator:     GreaterThanOperator,
+					RightOperand: 20,
+				},
+				Operator: LogicalOrOperator,
+				RightMatcher: MatcherWithoutLogicalOperator{ // data1 < 30
+					LeftOperand:  Data1,
+					Operator:     LessThanOperator,
+					RightOperand: 30,
+				},
+			},
+			Operator: LogicalAndOperator,
+			RightMatcher: MatcherWithoutLogicalOperator{ // data2 != 15
+				LeftOperand:  Data2,
+				Operator:     UnequalToOperator,
+				RightOperand: 15,
+			},
+		},
+	}
+
+	s := "data1 == 557 || data1 != 73 && data2 > 20 || data1 < 30 && data2 != 15"
+	matcher, err := Parse(s)
+
+	if err != wantedErr {
+		t.Errorf("Parse(%q) returns an incorrect error %q, want %v.", s, err, wantedErr)
+	}
+
+	if !areMatchersEqual(matcher, wantedMatcher) {
+		t.Errorf("Parse(%q) returns an incorrect matcher %v, want %v.", s, matcher, wantedMatcher)
+	}
+}
