@@ -65,7 +65,27 @@ func TestParseInvalidLeftMatcher(t *testing.T) {
 	if err == nil {
 		t.Errorf("Parse(%q) returns an incorrect error %v, want %q.", s, err, wantedErr)
 	} else if err.Error() != wantedErr.Error() {
-		t.Errorf("Parse(%q) returns incorrect error %q, want %q.", s, err, wantedErr)
 		t.Errorf("Parse(%q) returns an incorrect error %q, want %q.", s, err, wantedErr)
+	}
+}
+
+// Test that Parse parses a matcher, without a logical operator, correctly.
+func TestParseWithoutLogicalOperator(t *testing.T) {
+	var wantedErr error = nil
+	wantedMatcher := MatcherWithoutLogicalOperator{
+		LeftOperand:  Data1,
+		Operator:     EqualToOperator,
+		RightOperand: 557,
+	}
+
+	s := "data1 == 557"
+	matcher, err := Parse(s)
+
+	if err != wantedErr {
+		t.Errorf("Parse(%q) returns an incorrect error %q, want %v.", s, err, wantedErr)
+	}
+
+	if !areMatchersEqual(matcher, wantedMatcher) {
+		t.Errorf("Parse(%q) returns an incorrect matcher %v, want %v.", s, matcher, wantedMatcher)
 	}
 }
