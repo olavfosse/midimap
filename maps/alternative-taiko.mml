@@ -1,0 +1,15 @@
+#!/usr/bin/env midimap
+# This is an alternative to taiko.mml in which hitting whether a don or ka is
+# produced depends on the force applied.
+#
+# If you have difficulites understanding this map please read taiko.mml first.
+#
+# Map snare to f
+data1 == 38 && data2 < 80 && data2 != 0 -> 33
+# Map high-force snare e
+data1 == 38 && data2 >= 80 -> 18
+#
+# Map floor tom to i
+data1 == 43 && data2 < 80 && data2 != 0 -> 36
+# Map high-force floor tom to j
+data1 == 43 && data2 >= 80 -> 23
