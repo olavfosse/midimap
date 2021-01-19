@@ -158,3 +158,18 @@ func TestParseNoLeftOperand(t *testing.T) {
 		t.Errorf("Parse(%q) returns an incorrect error %q, want %q.", s, err, wantedErr)
 	}
 }
+
+// Test that Parse parses a matcher, without a logical operator, lacking a right operand, correctly.
+func TestParseNoRightOperand(t *testing.T) {
+	s := "data1 >"
+
+	var wantedErr error = fmt.Errorf("matcher %q: no valid right operand", s)
+
+	_, err := Parse(s)
+
+	if err == nil {
+		t.Errorf("Parse(%q) returns incorrect error %v, want %q.", s, err, wantedErr)
+	} else if err.Error() != wantedErr.Error() {
+		t.Errorf("Parse(%q) returns incorrect error %q, want %q.", s, err, wantedErr)
+	}
+}
