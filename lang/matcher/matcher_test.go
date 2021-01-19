@@ -9,17 +9,9 @@ import (
 func TestParse(t *testing.T) {
 	var wantedErr error = nil
 	wantedMatcher := MatcherWithLogicalOperator{
-		LeftMatcher: MatcherWithoutLogicalOperator{
-			LeftOperand:  Data1,
-			Operator:     LessThanOperator,
-			RightOperand: 2,
-		},
-		Operator: LogicalAndOperator,
-		RightMatcher: MatcherWithoutLogicalOperator{
-			LeftOperand:  Data2,
-			Operator:     UnequalToOperator,
-			RightOperand: 3,
-		},
+		MatcherWithoutLogicalOperator{Data1, LessThanOperator, 2},
+		LogicalAndOperator,
+		MatcherWithoutLogicalOperator{Data2, UnequalToOperator, 3},
 	}
 
 	s := "data1 < 2 && data2 != 3"
@@ -52,11 +44,7 @@ func TestParseInvalidLeftMatcher(t *testing.T) {
 // Test that Parse parses a matcher, without a logical operator, correctly.
 func TestParseWithoutLogicalOperator(t *testing.T) {
 	var wantedErr error = nil
-	wantedMatcher := MatcherWithoutLogicalOperator{
-		LeftOperand:  Data1,
-		Operator:     EqualToOperator,
-		RightOperand: 557,
-	}
+	wantedMatcher := MatcherWithoutLogicalOperator{Data1, EqualToOperator, 557}
 
 	s := "data1 == 557"
 	matcher, err := Parse(s)
@@ -74,41 +62,21 @@ func TestParseWithoutLogicalOperator(t *testing.T) {
 // Important, this test verifies that the logical operators have correct precedence, that is && must have higher precedence than ||.
 func TestParseComplex(t *testing.T) {
 	var wantedErr error = nil
-	wantedMatcher := MatcherWithLogicalOperator{ // data1 == 557 || data1 != 73 && data2 > 20 || data1 < 30 && data2 != 15
-		LeftMatcher: MatcherWithLogicalOperator{ // data1 == 557 || data1 != 73
-			LeftMatcher: MatcherWithoutLogicalOperator{ // data1 == 557
-				LeftOperand:  Data1,
-				Operator:     EqualToOperator,
-				RightOperand: 557,
-			},
-			Operator: LogicalOrOperator,
-			RightMatcher: MatcherWithoutLogicalOperator{ // data1 != 73
-				LeftOperand:  Data1,
-				Operator:     UnequalToOperator,
-				RightOperand: 73,
-			},
+	wantedMatcher := MatcherWithLogicalOperator{
+		MatcherWithLogicalOperator{
+			MatcherWithoutLogicalOperator{Data1, EqualToOperator, 557},
+			LogicalOrOperator,
+			MatcherWithoutLogicalOperator{Data1, UnequalToOperator, 73},
 		},
-		Operator: LogicalAndOperator,
-		RightMatcher: MatcherWithLogicalOperator{ // data2 > 20 || data1 < 30 && data2 != 15
-			LeftMatcher: MatcherWithLogicalOperator{ // data2 > 20 || data1 < 30
-				LeftMatcher: MatcherWithoutLogicalOperator{ // data2 > 20
-					LeftOperand:  Data2,
-					Operator:     GreaterThanOperator,
-					RightOperand: 20,
-				},
-				Operator: LogicalOrOperator,
-				RightMatcher: MatcherWithoutLogicalOperator{ // data1 < 30
-					LeftOperand:  Data1,
-					Operator:     LessThanOperator,
-					RightOperand: 30,
-				},
+		LogicalAndOperator,
+		MatcherWithLogicalOperator{
+			MatcherWithLogicalOperator{
+				MatcherWithoutLogicalOperator{Data2, GreaterThanOperator, 20},
+				LogicalOrOperator,
+				MatcherWithoutLogicalOperator{Data1, LessThanOperator, 30},
 			},
-			Operator: LogicalAndOperator,
-			RightMatcher: MatcherWithoutLogicalOperator{ // data2 != 15
-				LeftOperand:  Data2,
-				Operator:     UnequalToOperator,
-				RightOperand: 15,
-			},
+			LogicalAndOperator,
+			MatcherWithoutLogicalOperator{Data2, UnequalToOperator, 15},
 		},
 	}
 
@@ -140,7 +108,7 @@ func TestParseNoLeftOperand(t *testing.T) {
 }
 
 // Test that Parse parses a matcher, without a logical operator, lacking a right operand, correctly.
-func TestParseNoRightOperand(t *testing.T) {
+func TestParseNo(t *testing.T) {
 	s := "data1 >"
 
 	var wantedErr error = fmt.Errorf("matcher %q: no valid right operand", s)

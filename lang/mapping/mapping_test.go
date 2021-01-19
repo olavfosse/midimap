@@ -12,17 +12,9 @@ func TestParse(t *testing.T) {
 	var wantedErr error = nil
 	wantedMapping := Mapping{
 		Matcher: matcher.MatcherWithLogicalOperator{
-			LeftMatcher: matcher.MatcherWithoutLogicalOperator{
-				LeftOperand:  matcher.Data1,
-				Operator:     matcher.EqualToOperator,
-				RightOperand: 44,
-			},
-			Operator: matcher.LogicalAndOperator,
-			RightMatcher: matcher.MatcherWithoutLogicalOperator{
-				LeftOperand:  matcher.Data2,
-				Operator:     matcher.EqualToOperator,
-				RightOperand: 64,
-			},
+			matcher.MatcherWithoutLogicalOperator{matcher.Data1, matcher.EqualToOperator, 44},
+			matcher.LogicalAndOperator,
+			matcher.MatcherWithoutLogicalOperator{matcher.Data2, matcher.EqualToOperator, 64},
 		},
 		Keycode: 1,
 	}
