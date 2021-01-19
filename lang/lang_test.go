@@ -7,37 +7,6 @@ import (
 	"./matcher"
 )
 
-// Test that parseKeycode parses a simple valid keycode correctly.
-func TestParseKeycode(t *testing.T) {
-	var wantedErr error = nil
-	wantedKeycode := 1
-
-	s := "1" // ESC
-	keycode, err := parseKeycode(s)
-
-	if err != wantedErr {
-		t.Errorf("parseKeycode(%q) returns an incorrect error %q, want %v.", s, err, wantedErr)
-	}
-
-	if keycode != wantedKeycode {
-		t.Errorf("parseKeycode(%q) returns an incorrect keycode %d, want %d.", s, keycode, wantedKeycode)
-	}
-}
-
-// Test that parseKeycode parses a keycode, with spaces interspersed between the digits, correctly.
-func TestParseKeycodeInterspersedSpaces(t *testing.T) {
-	s := "1 2 3 4 5 6 7 8 9"
-	wantedErr := fmt.Errorf("keycode %q: invalid", s)
-
-	_, err := parseKeycode(s)
-
-	if err == nil {
-		t.Errorf("parseKeycode(%q) returns an incorrect error %v, want %q.", s, err, wantedErr)
-	} else if err.Error() != wantedErr.Error() {
-		t.Errorf("parseKeycode(%q) returns an incorrect error %q, want %q.", s, err, wantedErr)
-	}
-}
-
 func (m Mapping) equal(n Mapping) bool {
 	return m.Matcher.Equal(n.Matcher) && m.Keycode == n.Keycode
 }

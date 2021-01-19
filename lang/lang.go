@@ -7,25 +7,12 @@ import (
 	"bufio"
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"./helper"
+	"./keycode"
 	"./matcher"
 )
-
-// parseKeycode parses a keycode as specified in Section 1.2.2 KEYCODES of the midimap-lang specification.
-//
-// If s is a valid keycode as described by the specification, parseKeycode returns keycode, nil.
-// Otherwise, parseKeycode returns an error describing why the keycode is invalid.
-// s may not contain any leading or trailing spaces.
-func parseKeycode(s string) (int, error) {
-	keycode, err := strconv.Atoi(s)
-	if err != nil {
-		return keycode, fmt.Errorf("keycode %q: invalid", s)
-	}
-	return keycode, nil
-}
 
 type Mapping struct {
 	Matcher matcher.Matcher
@@ -47,7 +34,7 @@ func parseMapping(s string) (mapping Mapping, err error) {
 	if err != nil {
 		return
 	}
-	mapping.Keycode, err = parseKeycode(strings.TrimSpace(after))
+	mapping.Keycode, err = keycode.Parse(strings.TrimSpace(after))
 	return
 }
 
