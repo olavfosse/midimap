@@ -15,6 +15,7 @@ import (
 
 	"./driver"
 	"./lang"
+	"./lang/mapping"
 	"./lang/matcher"
 )
 
@@ -212,7 +213,7 @@ func press(kb keybd_event.KeyBonding, k int) (err error) {
 // If an io-error occurs, the error is returned.
 // If the parser fails at parsing some mapping, it describe the problem and move on to the next mapping.
 // No error is returned for parsing errors.
-func getMappingsFromMapName(mapName string) (mappings []lang.Mapping, err error) {
+func getMappingsFromMapName(mapName string) (mappings []mapping.Mapping, err error) {
 	mapFile, err := os.Open(mapName)
 	if err != nil {
 		return
@@ -232,7 +233,7 @@ func getMappingsFromMapName(mapName string) (mappings []lang.Mapping, err error)
 	return
 }
 
-func mapMIDIMessageToKeyPress(kb keybd_event.KeyBonding, mappings []lang.Mapping, msg midi.Message) (err error) {
+func mapMIDIMessageToKeyPress(kb keybd_event.KeyBonding, mappings []mapping.Mapping, msg midi.Message) (err error) {
 	for _, mapping := range mappings {
 		if matcherMatchesMessage(mapping.Matcher, msg) {
 			// NB: We iterate through all mappings regardless of if some earlier mapping matched. This is expected behaviour.

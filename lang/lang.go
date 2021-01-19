@@ -1,49 +1,19 @@
-// Functions for parsing midimap-lang code.
-//
-// Before reading this code it is advised that you read through and comprehend the midimap-lang specification.
+// Before descending into the packages in this directory, it is advised to read and comprehend the midimap-lang specifications.
 package lang
 
 import (
 	"bufio"
-	"fmt"
-	"regexp"
 	"strings"
 
-	"./helper"
-	"./keycode"
-	"./matcher"
+	"./mapping"
 )
-
-type Mapping struct {
-	Matcher matcher.Matcher
-	Keycode int
-}
-
-// parseMapping parses a mapping as specified in Section 1.2 MAPPINGS of the midimap-lang specification.
-//
-// If s is a valid mapping as described by the specification, parseMapping returns mapping, nil.
-// Otherwise, parseMapping returns an error describing why the mapping is invalid.
-func parseMapping(s string) (mapping Mapping, err error) {
-	r := regexp.MustCompilePOSIX("->")
-	before, after, ok := helper.BeforeAndAfter(r, s)
-	if !ok {
-		err = fmt.Errorf("mapping %q: no valid separator", s)
-		return
-	}
-	mapping.Matcher, err = matcher.Parse(strings.TrimSpace(before))
-	if err != nil {
-		return
-	}
-	mapping.Keycode, err = keycode.Parse(strings.TrimSpace(after))
-	return
-}
 
 // NextMapping parses a mapping as specified in Section 1.2 MAPPINGS of the midimap-lang specification, by parsing lines until a mapping is reached or an io error occurs.
 //
 // If an io error occurs, NextMapping returns the io error.
 // If a parsing error occurs, NextMapping returns the parsing error.
-// Otherwise, NextMapping returns mapping, nil.
-func NextMapping(r *bufio.Reader) (mapping Mapping, err error) {
+// Otherwise, NextMapping returns m, nil.
+func NextMapping(r *bufio.Reader) (m mapping.Mapping, err error) {
 	var line string
 	for {
 		var s string
@@ -58,5 +28,5 @@ func NextMapping(r *bufio.Reader) (mapping Mapping, err error) {
 		}
 	}
 
-	return parseMapping(line)
+	return mapping.Parse(line)
 }
