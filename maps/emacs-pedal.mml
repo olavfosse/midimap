@@ -25,7 +25,7 @@
 # |-----------+----------------------------------------------------------------|
 # | Bottom    | If the pedal is pressed all the way down with force above a    |
 # |           | certain threshold, a event with data1 equal to 44 and data2    |
-# |           | equal to 0 is emitted.                                        |
+# |           | equal to 0 is emitted.                                         |
 # |           |                                                                |
 # |           | I cannot measure the exact threshold, but it is the same       |
 # |           | force as required to create an audible hi-hat close sound.     |
