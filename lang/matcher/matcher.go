@@ -129,6 +129,7 @@ func beforeAndAfterLogicalOperator(s string) (string, string, LogicalOperator) {
 // Please read it if you encounter difficulties understanding something.
 type Matcher interface {
 	isMatcher()
+	Equal(Matcher) bool
 }
 
 // MatcherWithoutLogicalOperator represents a simple matcher with no logical operator, such as:
@@ -139,6 +140,15 @@ type MatcherWithoutLogicalOperator struct {
 	LeftOperand  Data1OrData2
 	Operator     ComparisonOperator
 	RightOperand int64
+}
+
+// Equal reports whether m and n represents the same matcher.
+func (m MatcherWithoutLogicalOperator) Equal(n Matcher) bool {
+	mm, ok := n.(MatcherWithoutLogicalOperator)
+	return ok &&
+		m.LeftOperand == mm.LeftOperand &&
+		m.Operator == mm.Operator &&
+		m.RightOperand == mm.RightOperand
 }
 
 func (_ MatcherWithoutLogicalOperator) isMatcher() {}
@@ -169,6 +179,15 @@ type MatcherWithLogicalOperator struct {
 	LeftMatcher  Matcher
 	Operator     LogicalOperator
 	RightMatcher Matcher
+}
+
+// Equal reports whether m and n represent the same matcher.
+func (m MatcherWithLogicalOperator) Equal(n Matcher) bool {
+	mm, ok := n.(MatcherWithLogicalOperator)
+	return ok &&
+		m.LeftMatcher.Equal(mm.LeftMatcher) &&
+		m.Operator == mm.Operator &&
+		m.RightMatcher.Equal(mm.RightMatcher)
 }
 
 func (_ MatcherWithLogicalOperator) isMatcher() {}
