@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/micmonay/keybd_event"
 	"gitlab.com/gomidi/midi"
@@ -57,7 +58,10 @@ func dispatch(args []string) error {
 		}
 		return dispatchMap(portNumber, args[3])
 	default:
-		return errors.New("usage:\tmidimap map portnumber mapname\n\tmidimap ports\n\tmidimap log portnumber [matcher]")
+		return errors.New(strings.TrimSpace(`
+usage:	midimap ports
+	midimap map portnumber mapname
+	midimap log portnumber [matcher]`))
 	}
 }
 
