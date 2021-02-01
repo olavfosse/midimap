@@ -16,11 +16,7 @@ sudo apt install libasound2-dev
 # MacOS
 # TODO: Add possible macos rtmidi dependencios
 ```
-#### Install Go dependencies
-```sh
-go get github.com/micmonay/keybd_event gitlab.com/gomidi/midi gitlab.com/gomidi/midi/reader gitlab.com/gomidi/rtmididrv
-```
-#### Compile
+#### Build
 ```sh
 $ go build -tags rtmidi
 ```
@@ -32,10 +28,7 @@ sudo apt install libportmidi-dev
 # MacOS
 brew install portmidi
 ```
-#### Install Go dependencies
-go get github.com/micmonay/keybd_event gitlab.com/gomidi/midi gitlab.com/gomidi/midi/reader gitlab.com/gomidi/portmididrv
-```
-#### Compile
+#### Build
 ```sh
 $ go build -tags portmidi
 ```
@@ -45,6 +38,6 @@ There are several other MIDI to keypress programs, but none of them are sufficie
 | Alternative                                                                         | License                              | Platform     | Comment          |
 |-------------------------------------------------------------------------------------|--------------------------------------|--------------|------------------|
 | [Midikey2Key](https://midikey2key.de)                                               | Propietary freeware                  | Windows only |                  |
-| [xobs/midi-to-keypress](https://github.com/xobs/midi-to-keypress)                   | Apache License 2.0 | Windows only |                  |
+| [xobs/midi-to-keypress](https://github.com/xobs/midi-to-keypress)                   | Apache License 2.0                   | Windows only |                  |
 | [davidlukerice/midi-to-keypress](https://github.com/davidlukerice/midi-to-keypress) | MIT                                  | Windows only | Uses Electron ;( |
 | [mwicat/midimap](https://github.com/mwicat/midimap)                                 | Source available propietary freeware | Windows only | Uses Python ;(   |
