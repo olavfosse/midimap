@@ -6,14 +6,14 @@ import (
 	"os"
 
 	// Command modifiers
-	"./cm/ports"
+	"github.com/fossegrim/midimap/cm/ports"
 	// mapcm's naming scheme is different from the others, which
 	// is required since map is a keyword. This is just temporary
 	// since map shall be replaced with load+record soon.
-	"./cm/log"
-	"./cm/mapcm"
+	"github.com/fossegrim/midimap/cm/log"
+	"github.com/fossegrim/midimap/cm/mapcm"
 
-	"./usage"
+	"github.com/fossegrim/midimap/usage"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package ports
 import (
 	"fmt"
 
-	"../../driver"
-	"../../usage"
+	"github.com/fossegrim/midimap/driver"
+	"github.com/fossegrim/midimap/usage"
 	"gitlab.com/gomidi/midi"
 )
 

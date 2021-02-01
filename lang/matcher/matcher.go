@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"../helper"
+	"github.com/fossegrim/midimap/lang/helper"
 )
 
 // Parse parses a matcher as specified in Section 1.2.1 MATCHERS of the midimap-lang specification.

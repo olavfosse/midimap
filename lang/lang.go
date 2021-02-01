@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"strings"
 
-	"./mapping"
+	"github.com/fossegrim/midimap/lang/mapping"
 )
 
 // NextMapping parses a mapping as specified in Section 1.2 MAPPINGS of the midimap-lang specification, by parsing lines until a mapping is reached or an io error occurs.

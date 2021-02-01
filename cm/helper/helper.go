@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"../../lang/matcher"
+	"github.com/fossegrim/midimap/lang/matcher"
 	"gitlab.com/gomidi/midi"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"../matcher"
+	"github.com/fossegrim/midimap/lang/matcher"
 )
 
 // Test that Parse parses a simple valid mapping correctly.

@@ -3,10 +3,10 @@ package log
 import (
 	"fmt"
 
-	"../../driver"
-	"../../lang/matcher"
-	"../../usage"
-	"../helper"
+	"github.com/fossegrim/midimap/cm/helper"
+	"github.com/fossegrim/midimap/driver"
+	"github.com/fossegrim/midimap/lang/matcher"
+	"github.com/fossegrim/midimap/usage"
 	"gitlab.com/gomidi/midi"
 	"gitlab.com/gomidi/midi/reader"
 )

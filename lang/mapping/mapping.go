@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	"../helper"
-	"../keycode"
-	"../matcher"
+	"github.com/fossegrim/midimap/lang/helper"
+	"github.com/fossegrim/midimap/lang/keycode"
+	"github.com/fossegrim/midimap/lang/matcher"
 )
 
 type Mapping struct {
