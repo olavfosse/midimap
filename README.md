@@ -13,6 +13,8 @@ If you are confused with regards to which library to use, I recommend rtmidi for
 ```sh
 # Debian derivatives
 sudo apt install libasound2-dev
+# Fedora and the-like
+sudo dnf install gcc-c++ rtmidi-devel
 # MacOS
 # TODO: Add possible macos rtmidi dependencios
 ```
