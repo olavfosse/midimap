@@ -2,8 +2,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	// Command modifiers
 	"github.com/fossegrim/midimap/cm/ports"
@@ -27,7 +29,7 @@ func main() {
 // mainish is like main, except if it encounters an error it returns it instead of presenting it to the user.
 func mainish() error {
 	if len(os.Args) < 2 {
-		return usage.Usage()
+		return usage
 	}
 
 	commandModifiers := map[string](func([]string) error){
@@ -37,8 +39,13 @@ func mainish() error {
 	}
 	cm, ok := commandModifiers[os.Args[1]]
 	if !ok {
-		return usage.Usage()
+		return usage
 	}
 
 	return cm(os.Args[2:])
 }
+
+var usage = errors.New(strings.TrimSpace(`
+usage:	midimap ports
+	midimap map portnumber mapname
+	midimap log portnumber [matcher]`))
