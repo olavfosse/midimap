@@ -1,4 +1,4 @@
-package mapcm
+package main
 
 import (
 	"bufio"
@@ -7,25 +7,24 @@ import (
 	"io"
 	"os"
 
-	"github.com/fossegrim/midimap/cm/helper"
-	"github.com/fossegrim/midimap/driver"
 	"github.com/fossegrim/midimap/lang"
 	"github.com/fossegrim/midimap/lang/mapping"
-	"github.com/fossegrim/midimap/usage"
 	"github.com/micmonay/keybd_event"
 	"gitlab.com/gomidi/midi"
 	"gitlab.com/gomidi/midi/reader"
 )
 
-// MapCM corresponds to the map command modifier. args corresponds to
-// the list of arguments listed on the command line after the map
-// command modifier.
+// mapCommandModifier corresponds to the map command modifier. args corresponds
+// to the list of arguments listed on the command line after the map command
+// modifier.
 //
-// For documentation about the map command modifier itself, consult
-// the (to be written) manual.
-// TODO: Write midimap(1) and/or midimap-map(1)
-func MapCM(args []string) error {
-	portNumber, mapName, err := parseArgs(args)
+// For documentation about the map command modifier itself, see midimap(1).
+func mapCommandModifier(args []string) error {
+	if len(args) != 2 {
+		return errUsage
+	}
+	mapName := args[1]
+	portNumber, err := parsePortNumber(args[0])
 	if err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func MapCM(args []string) error {
 		return err
 	}
 
-	drv, err := driver.New()
+	drv, err := newDriver()
 	if err != nil {
 		return err
 	}
@@ -46,7 +45,7 @@ func MapCM(args []string) error {
 		return err
 	}
 
-	in, err := helper.GetInByPortNumber(ins, portNumber)
+	in, err := getInByPortNumber(ins, portNumber)
 	if err != nil {
 		return err
 	}
@@ -58,13 +57,11 @@ func MapCM(args []string) error {
 	defer in.Close()
 
 	kb, err := keybd_event.NewKeyBonding()
-
 	if err != nil {
 		if err.Error() == "permission error for /dev/uinput try cmd : sudo chmod +0666 /dev/uinput" {
 			return errors.New("insufficient permissions to simulate keypresses")
-		} else {
-			return err
 		}
+		return err
 	}
 
 	rd := reader.New(
@@ -92,19 +89,9 @@ func MapCM(args []string) error {
 	}
 }
 
-func parseArgs(args []string) (portNumber uint64, mapName string, err error) {
-	if len(args) != 2 {
-		err = usage.Usage()
-		return
-	}
-	mapName = args[1]
-	portNumber, err = helper.ParsePortNumber(args[0])
-	return
-}
-
 func mapMIDIMessageToKeyPress(kb keybd_event.KeyBonding, mappings []mapping.Mapping, msg midi.Message) (err error) {
 	for _, mapping := range mappings {
-		if helper.MatcherMatchesMessage(mapping.Matcher, msg) {
+		if matcherMatchesMessage(mapping.Matcher, msg) {
 			// NB: We iterate through all mappings regardless of if some earlier mapping matched. This is expected behaviour.
 			err = press(kb, mapping.Keycode)
 			if err != nil {

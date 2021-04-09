@@ -1,5 +1,4 @@
-// The helper package contains random helper functions that are needed by several unrelated cm/ packages.
-package helper
+package main
 
 import (
 	"errors"
@@ -10,8 +9,8 @@ import (
 	"gitlab.com/gomidi/midi"
 )
 
-// MatcherMatchesMessage reports whether m matches message.
-func MatcherMatchesMessage(m matcher.Matcher, msg midi.Message) bool {
+// matcherMatchesMessage reports whether m matches message.
+func matcherMatchesMessage(m matcher.Matcher, msg midi.Message) bool {
 	switch m := m.(type) {
 	case matcher.MatcherWithoutLogicalOperator:
 		var data int64
@@ -46,11 +45,11 @@ func MatcherMatchesMessage(m matcher.Matcher, msg midi.Message) bool {
 	case matcher.MatcherWithLogicalOperator:
 		switch m.Operator {
 		case matcher.LogicalAndOperator:
-			return MatcherMatchesMessage(m.LeftMatcher, msg) &&
-				MatcherMatchesMessage(m.RightMatcher, msg)
+			return matcherMatchesMessage(m.LeftMatcher, msg) &&
+				matcherMatchesMessage(m.RightMatcher, msg)
 		case matcher.LogicalOrOperator:
-			return MatcherMatchesMessage(m.LeftMatcher, msg) ||
-				MatcherMatchesMessage(m.RightMatcher, msg)
+			return matcherMatchesMessage(m.LeftMatcher, msg) ||
+				matcherMatchesMessage(m.RightMatcher, msg)
 		default:
 			panic("unreachable")
 		}
@@ -59,9 +58,9 @@ func MatcherMatchesMessage(m matcher.Matcher, msg midi.Message) bool {
 	}
 }
 
-// GetInByPortNumber retrieves the midi.In by number(should not be
+// getInByPortNumber retrieves the midi.In by number(should not be
 // confused with index) portNumber from ins.
-func GetInByPortNumber(ins []midi.In, number uint64) (in midi.In, err error) {
+func getInByPortNumber(ins []midi.In, number uint64) (in midi.In, err error) {
 	for _, innerIn := range ins {
 		if uint64(innerIn.Number()) == number {
 			in = innerIn
@@ -73,8 +72,8 @@ func GetInByPortNumber(ins []midi.In, number uint64) (in midi.In, err error) {
 	return
 }
 
-// ParsePortNumber parses a port number.
-func ParsePortNumber(s string) (portNumber uint64, err error) {
+// parsePortNumber parses a port number.
+func parsePortNumber(s string) (portNumber uint64, err error) {
 	portNumber, err = strconv.ParseUint(s, 10, 0)
 	if err != nil {
 		err = errors.New("portnumber must be a valid unsigned integer")
