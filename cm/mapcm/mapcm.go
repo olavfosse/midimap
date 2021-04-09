@@ -61,7 +61,7 @@ func MapCM(args []string) error {
 
 	if err != nil {
 		if err.Error() == "permission error for /dev/uinput try cmd : sudo chmod +0666 /dev/uinput" {
-			return errors.New("error: insufficient permissions to simulate keypresses")
+			return errors.New("insufficient permissions to simulate keypresses")
 		} else {
 			return err
 		}

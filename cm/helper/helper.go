@@ -69,7 +69,7 @@ func GetInByPortNumber(ins []midi.In, number uint64) (in midi.In, err error) {
 		}
 
 	}
-	err = fmt.Errorf("error: no MIDI port by number %d", number)
+	err = fmt.Errorf("no MIDI port by number %d", number)
 	return
 }
 
@@ -77,7 +77,7 @@ func GetInByPortNumber(ins []midi.In, number uint64) (in midi.In, err error) {
 func ParsePortNumber(s string) (portNumber uint64, err error) {
 	portNumber, err = strconv.ParseUint(s, 10, 0)
 	if err != nil {
-		err = errors.New("error: portnumber must be a valid unsigned integer")
+		err = errors.New("portnumber must be a valid unsigned integer")
 	}
 	return
 }

@@ -14,13 +14,14 @@ import (
 	// since map shall be replaced with load+record soon.
 	"github.com/fossegrim/midimap/cm/log"
 	"github.com/fossegrim/midimap/cm/mapcm"
-
-	"github.com/fossegrim/midimap/usage"
 )
 
 func main() {
 	err := mainish()
 	if err != nil {
+		if err != errUsage {
+			fmt.Print("error:")
+		}
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
@@ -29,7 +30,7 @@ func main() {
 // mainish is like main, except if it encounters an error it returns it instead of presenting it to the user.
 func mainish() error {
 	if len(os.Args) < 2 {
-		return usage
+		return errUsage
 	}
 
 	commandModifiers := map[string](func([]string) error){
@@ -39,13 +40,13 @@ func mainish() error {
 	}
 	cm, ok := commandModifiers[os.Args[1]]
 	if !ok {
-		return usage
+		return errUsage
 	}
 
 	return cm(os.Args[2:])
 }
 
-var usage = errors.New(strings.TrimSpace(`
+var errUsage = errors.New(strings.TrimSpace(`
 usage:	midimap ports
 	midimap map portnumber mapname
 	midimap log portnumber [matcher]`))
